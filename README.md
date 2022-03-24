@@ -1,5 +1,5 @@
 # Audioquorum-Website
-MERN Project for EV Slot Booking website
+MERN Project for Audioquorum website
 
 
 # Contribution Guidelines
