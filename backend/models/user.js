@@ -1,4 +1,5 @@
 // Importing modules
+require('dotenv').config()
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
@@ -71,7 +72,31 @@ userSchema.pre('save', async function(next) {
     }
 });
 
+userSchema.methods.generateAuthToken =  function () {
+    const user = this
+    const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET) 
+    return token
+  
+  } 
+  
+  userSchema.statics.findByCredentials = async function ( username, password ) {
+    const user = await this.findOne({ username })
+  
+    if(!user) {
+      throw new Error('Unable to login')
+    }
+  
+    const isMatch = await bcrypt.compare(password, user.password)
+  
+    if(!isMatch) {
+      throw new Error('Unable to login')
+    }
+  
+    return user
+  }
+
 const User = mongoose.model('User', userSchema);
 
 // Exporting the module
 module.exports = User;
+
