@@ -14,4 +14,9 @@ export const theme = createTheme({
     typography: {
       fontFamily: '"Poppins", sans-serif',
     },
+    root: {
+      "& .MuiFilledInput-root": {
+        background: "#D5E2DF"
+      }
+    }
   });
