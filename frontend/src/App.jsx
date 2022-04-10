@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import './App.css';
 import { ThemeProvider } from '@mui/material/styles';
-import {theme} from "./assets/theme";
+import {theme} from "./styles/theme";
 
 import Navbar from './components/Navbar';
 import { Home } from './pages/Home';
