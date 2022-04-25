@@ -58,6 +58,13 @@ const startTest = async (req, res) => {
             return;
         }
         
+        // Check if the user has previously given the test
+        if (currentUser.test.some(test => test.testId == req.body.testId)) {
+            res.status(400).json({
+                message: 'Test Already Attempted!',
+            });
+            return;
+        }
         currentUser.test.push({testId: test._id, marksObtained: null});
         test.userIds.push(currentUser._id);
 
