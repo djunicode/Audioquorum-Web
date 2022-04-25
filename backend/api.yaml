@@ -1,0 +1,103 @@
+swagger: "2.0"
+info:
+  title: JAAV APIs
+  description: This is the API Documentation
+  version: 1.0
+
+  servers:
+    -url: http://localhost:5001
+    description: THis is my local Server
+
+schemes: [http,https]
+
+paths:
+  # Create Users
+  /api/admin/create:
+    post:
+      summary:  Creating a new User
+      produces: 
+        - application/json
+      consumes: 
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          schema:
+            type: object
+            properties:
+              name: 
+                type: string
+                default: "xxxx"
+              username: 
+                type: string
+                default: "xxxx"
+              password: 
+                type: string
+                default: "xxxx"
+              type:
+                type: string
+                default: "TEACHER"
+
+      responses: 
+       201:
+        description: Success, New user added successfully
+       400:
+        description: Unable to register, error
+  
+  #Return  Users
+  /api/admin/view:
+    # get:
+    # summary: Returns all users in the database
+    # responses:
+    #   200: 
+    #     description: Successfully fetched all users from the database
+    #   400: 
+    #     description: Unable to fetch users
+    get:
+      summary: Returns a list of users.
+      description: People Who are already registered
+      responses:
+        200:    # status code
+          description: Successul Response
+        400:
+          description: Error please check
+
+  #Login Users:
+  /api/users/login:
+    post:
+      summary:  Logging in a user
+      produces: 
+        - application/json
+      consumes: 
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          schema:
+            type: object
+            properties:
+              username: 
+                type: srting
+                default: "username"
+              password: 
+                type: string
+                default: "myPassword"              
+      responses: 
+       200:
+        description: Success, logged in sucesfully
+       400:
+        description: Unable to login,error occured
+  
+  #Logout Users:
+  /api/users/logout:
+    post:
+      summary:  To logout the user
+      produces: 
+        - application/json
+      consumes: 
+        - application/json
+      responses: 
+       200:
+        description: Successfully logged out user
+       500:
+        description: Internal server error occured
