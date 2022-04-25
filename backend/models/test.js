@@ -23,6 +23,10 @@ const testSchema = new mongoose.Schema(
             trim: true
         },
 
+        standard: {
+            type: String
+        },
+
         duration: {
             type: Number,
             required: true,
@@ -33,6 +37,11 @@ const testSchema = new mongoose.Schema(
             type: String,
             required: true,
             trim: true
+        },
+
+        status: {
+            type: String,
+            enum: ["UPCOMING", "ONGOING", "COMPLETED"]
         },
 
         questionIds: [{

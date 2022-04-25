@@ -2,8 +2,7 @@
 const User = require("../models/user")
 
 // View a student by their id mentioned in the body of the request
-const viewStudentById = (req, res) => {
-    
+const viewStudentById = async (req, res) => {
     const id = req.body.id;
 
     try {
@@ -23,9 +22,7 @@ const viewStudentById = (req, res) => {
 }
 
 const viewAllStudents = async (req, res) => {
-
     try {
-
         // Find all users with student type
         const students = await User.find({type: 'STUDENT'});
 
@@ -33,15 +30,11 @@ const viewAllStudents = async (req, res) => {
         res.status(200).json({
             data: students
         });
-
     } catch (err) {
         res.status(400).json({
             message: err.message
         }); 
     }
-    
-
-
 }
 
 module.exports = {viewStudentById, viewAllStudents}

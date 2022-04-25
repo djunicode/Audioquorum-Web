@@ -15,8 +15,6 @@ const createTest = async (req, res) => {
             await newQuestion.save();
             questionIds.push(newQuestion._id);
         }))
-
-        console.log(questionIds);
        
         // EDIT AFTER TESTING
         const currentUser = req.user ? req.user : {
@@ -50,7 +48,7 @@ const createTest = async (req, res) => {
 // Give a test
 const startTest = async (req, res) => {
     try {
-        const test = await Test.findById(req.body.testId);
+        const test = await Test.findById(req.body.testId).populate('questionIds', 'teacherId');
         let currentUser = req.user;
         
         if(!test) {
@@ -60,15 +58,14 @@ const startTest = async (req, res) => {
             return;
         }
         
-        
         currentUser.test.push({testId: test._id, marksObtained: null});
         test.userIds.push(currentUser._id);
-        
 
         await test.save();
         await currentUser.save();
         
         res.status(201).json({
+            data: test,
             message: 'Test started successfully!'
         });
     } catch(error) {
@@ -77,7 +74,6 @@ const startTest = async (req, res) => {
         });
     }
 };
-
 
 // End a test
 const endTest = async (req, res) => {
@@ -106,13 +102,9 @@ const endTest = async (req, res) => {
     }
 };
 
-
-
 // View the user's available tests by standard
-
 const getTestsByStandard = async (req, res) => {
     try {
-        
         const currentUser = req.user
         const standard = currentUser.standard
         let tests = await Test.find({standard});
@@ -127,10 +119,7 @@ const getTestsByStandard = async (req, res) => {
     }
 };
 
-
-
 // View the user's attempted tests
-
 const getAttemptedTests = async (req, res) => {
     try {
 
@@ -151,13 +140,11 @@ const getAttemptedTests = async (req, res) => {
         res.status(200).json({
             tests
         });
-
     } catch(error) {
         res.status(400).json({
             message: error.message
         });
     }
 };
-
 
 module.exports = {createTest, getTestsByStandard, getAttemptedTests, startTest, endTest}
