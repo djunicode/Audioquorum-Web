@@ -27,12 +27,12 @@ app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerJSDocs));
 
 // Importing Routes
 const adminRouter = require('./routes/admin');
-const userRouter = require('./routes/user');
+const authRouter = require('./routes/auth');
 const studentRouter = require('./routes/student');
 const testRouter = require('./routes/test');
 //const fileUpload = require('express-fileupload');
 
-app.use('/api/user', userRouter);
+app.use('/api/user', authRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/student', studentRouter);
 app.use('/api/test', testRouter);

@@ -74,7 +74,7 @@ const testSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-const Test = mongoose.model('Test', TestSchema);
+const Test = mongoose.model('Test', testSchema);
 
 // Exporting modules
 module.exports = Test;
