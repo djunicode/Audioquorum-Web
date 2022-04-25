@@ -1,5 +1,5 @@
 // Importing modules
-const express = require("express");
+const express = require('express');
 const morgan = require('morgan');
 const cors = require("cors");
 const db = require('./connection');
@@ -19,23 +19,24 @@ app.use(cookieParser())
 // Logging
 app.use(morgan('dev'));
 
-//Swagger
-const swaggerUI = require("swagger-ui-express");
-//const fileUpload = require("express-fileupload");
-const YAML = require("yamljs");
-const swaggerJSDocs = YAML.load("./api.yaml");
-app.use(express.json());
+// Swagger
+const swaggerUI = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerJSDocs = YAML.load('./api.yaml');
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerJSDocs));
+
+// Importing Routes
+const adminRouter = require('./routes/admin');
+const userRouter = require('./routes/user');
+const studentRouter = require('./routes/student');
+const testRouter = require('./routes/test');
+//const fileUpload = require('express-fileupload');
+
+app.use('/api/user', userRouter);
+app.use('/api/admin', adminRouter);
+app.use('/api/student', studentRouter);
+app.use('/api/test', testRouter);
 //app.use(fileUpload());
-
-//Importing Routes
-const adminRouter = require('./routes/admin')
-const userRouter = require('./routes/user')
-//const studentRouter = require('./routes/student')
-
-app.use('/api/users', userRouter)
-app.use('/api/admin', adminRouter)
-//app.use('/api/student', studentRouter)
 
 app.get('/api', (req, res) => {
     res.json({ message: "Hello from server!" });
