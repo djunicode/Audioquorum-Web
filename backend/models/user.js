@@ -1,7 +1,10 @@
 // Importing modules
 require('dotenv').config()
+
+const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+
 
 // Creating the schema
 const userSchema = new mongoose.Schema (
