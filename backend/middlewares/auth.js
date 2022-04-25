@@ -1,7 +1,7 @@
 require('dotenv').config()
 const e = require('express')
 const jwt = require('jsonwebtoken')
-const User = require('../models/User')
+const User = require('../models/user')
 
 let auth = {
 verifyjwt:  async (req, res, next) => {

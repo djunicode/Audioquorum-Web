@@ -1,4 +1,4 @@
-const User = require('../models/User')
+const User = require('../models/user')
 
 exports.loginUser = async (req, res) => {
     try{
@@ -23,5 +23,9 @@ exports.loginUser = async (req, res) => {
 
 exports.logoutUser = async (req,res) => {
   res.cookie('token', '', { maxAge: 1 })
+  res.json({
+    success: true,
+  
+  })
   
   }
