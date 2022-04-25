@@ -19,7 +19,7 @@ const questionSchema = new mongoose.Schema(
             required: true
         },
 
-        optionA: {
+        optionB: {
             type: String,
             required: true
         },

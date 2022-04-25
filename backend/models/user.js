@@ -39,6 +39,10 @@ const userSchema = new mongoose.Schema (
             enum: ["STUDENT", "TEACHER", "ADMIN"]
         },
 
+        standard: {
+            type: String
+        },
+
         test: [{
             testId: {
                 type: [mongoose.Schema.Types.ObjectId],
@@ -47,13 +51,6 @@ const userSchema = new mongoose.Schema (
 
             marksObtained: {
                 type: String
-            }
-        }],
-
-        tokens: [{
-            token: {
-                type: String, 
-                required: true
             }
         }],
     },
