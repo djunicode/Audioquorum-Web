@@ -12,7 +12,7 @@ schemes: [http,https]
 
 paths:
   # Create Users
-  /api/admin/create:
+  /api/admin/user/create:
     post:
       summary:  Creating a new user
       produces: 
@@ -43,8 +43,31 @@ paths:
        400:
         description: Unable to register, error
   
+  # View User
+  /api/admin/user/view:
+    get:
+      summary: Returns the data of a user
+      produces: 
+        - application/json
+      consumes: 
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          schema:
+            type: object
+            properties:
+              userid:
+                type: string
+                default: "00000"             
+      responses: 
+        200:
+        description: Successful Response
+        400:
+        description: Error please check
+
   # View Users
-  /api/admin/view:
+  /api/admin/user/viewAll:
     get:
       summary: Returns a list of users.
       description: People Who are already registered
@@ -55,7 +78,7 @@ paths:
           description: Error please check
   
   # Update Users:
-  /api/user/update:
+  /api/admin/user/update:
     put:
       summary:  Updating a user's details
       produces: 
@@ -84,7 +107,7 @@ paths:
         description: Unable to update, error occured
 
   # Delete Users:
-  /api/user/delete:
+  /api/admin/user/delete:
     delete:
       summary:  Deleting a user
       produces: 
@@ -102,9 +125,9 @@ paths:
                 default: "00000"             
       responses: 
        200:
-        description: Success, updated user sucesfully
+        description: Success, deleted user sucesfully
        400:
-        description: Unable to update, error occured
+        description: Unable to delete, error occured
 
   # Login Users:
   /api/user/login:
@@ -170,18 +193,18 @@ paths:
         400:
           description: Error! Please check.
 
-  # View all students
-  /api/admin/view:
+  # View Students
+  /api/student/viewAll:
     get:
-      summary: Returns a list of students
-      description: Students who are already registered
+      summary: Returns a list of students.
+      description: Students Who are already registered
       responses:
         200:    # status code
           description: Successful Response
         400:
           description: Error please check
 
-  #  Create Tests
+  # Create Tests
   /api/test/create:
     post:
       summary:  Creating a new test
