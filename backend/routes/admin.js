@@ -2,6 +2,7 @@
 const express = require('express');
 const {
     createUser,
+    viewUser,
     viewAllUsers,
     updateUser,
     deleteUser
@@ -9,10 +10,11 @@ const {
 
 const router = new express.Router();
 
-router.post('/create', createUser);
-router.get('/view', viewAllUsers);
-router.put('/update', updateUser);
-router.delete('/delete', deleteUser);
+router.post('/user/create', createUser);
+router.get('/user/view/', viewAllUsers);
+router.get('/user/viewAll', viewAllUsers);
+router.put('/user/update', updateUser);
+router.delete('/user/delete', deleteUser);
 
 // Exporting Modules
 module.exports = router;

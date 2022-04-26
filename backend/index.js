@@ -32,7 +32,7 @@ const studentRouter = require('./routes/student');
 const testRouter = require('./routes/test');
 //const fileUpload = require('express-fileupload');
 
-app.use('/api/user', authRouter);
+app.use('/api/auth', authRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/student', studentRouter);
 app.use('/api/test', testRouter);

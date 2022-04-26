@@ -16,6 +16,28 @@ const createUser = async (req, res) => {
     }
 };
 
+// View One User
+const viewUser = async (req, res) => {
+    try {
+        const currentUser = await User.findById(req.body.userId);
+        if (!currentUser) {
+            res.status(404).json({
+               message: 'User not found!' 
+            });
+            return;
+        }
+
+        res.status(200).json({
+            message: 'User found',
+            data: currentUser
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: error.message
+        });
+    }
+};
+
 // View All Users
 const viewAllUsers = async (req, res) => {
     try {
@@ -63,12 +85,12 @@ const deleteUser = async (req, res) => {
         if (!currentUser) {
             res.status(404).json({
                 message: "User not found!"
-             });
-         } else {
+            });
+        } else {
              res.status(200).json({
                  message: "User deleted!"
-             });
-         }
+            });
+        }
     } catch (error) {
         res.status(400).json({
             message: error.message
@@ -79,6 +101,7 @@ const deleteUser = async (req, res) => {
 // Exporting Modules 
 module.exports = {
     createUser,
+    viewUser,
     viewAllUsers,
     updateUser,
     deleteUser
