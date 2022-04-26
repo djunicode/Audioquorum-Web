@@ -1,13 +1,10 @@
-const express = require('express')
-//const User = require('../models/User')
-const router = new express.Router()
-const auth = require('../middlewares/auth') 
+const express = require('express');
 const {
-
   loginUser,
   logoutUser
+} = require('../controllers/auth');
 
-} = require('../controllers/auth')
+const router = new express.Router();
 
 //Login User - Public
 router.post('/login', loginUser )
