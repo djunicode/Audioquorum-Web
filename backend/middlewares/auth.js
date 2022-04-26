@@ -35,9 +35,9 @@ let auth = {
 		}
 	},
 
-	userTypeStudent: async (req, res, next) => {
+	userTypeTeacher: async (req, res, next) => {
 		try{
-			if (req.user.type === 'STUDENT') {
+			if (req.user.type === 'ADMIN' || req.user.type === 'TEACHER')  {
 				next();
 			} else {
 				res.status(403).json({
@@ -49,9 +49,23 @@ let auth = {
 		}
 	},
 
-	userTypeTeacher: async (req, res, next) => {
+	userTypeTeacherStudent: async (req, res, next) => {
 		try{
-			if (req.user.type === 'TEACHER') {
+			if (req.user.type === 'ADMIN' || req.user.type === 'TEACHER' || req.user.type === 'STUDENT') {
+				next();
+			} else {
+				res.status(403).json({
+					message: 'Access Denied'
+				});
+			}
+		} catch (e) {
+			res.status(401).send({error: e.message});
+		}
+	},
+
+	userTypeStudent: async (req, res, next) => {
+		try{
+			if (req.user.type === 'STUDENT') {
 				next();
 			} else {
 				res.status(403).json({

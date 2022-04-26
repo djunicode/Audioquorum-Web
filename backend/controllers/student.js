@@ -18,7 +18,7 @@ const viewStudentById = async (req, res) => {
         }
 
         // Checking for unauthorized access
-        if (student.type !== STUDENT) {
+        if (student.type !== 'STUDENT') {
             res.status(403).json({
                 message: 'Unauthorised Access'
             });
