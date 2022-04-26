@@ -45,7 +45,7 @@ paths:
   
   # View User
   /api/admin/user/view:
-    delete:
+    get:
       summary: Returns the data of a user
       produces: 
         - application/json
