@@ -130,7 +130,7 @@ paths:
         description: Unable to delete, error occured
 
   # Login Users:
-  /api/user/login:
+  /api/auth/login:
     post:
       summary:  Logging in a user
       produces: 
@@ -156,7 +156,7 @@ paths:
         description: Unable to login, error occured
 
   # Logout Users:
-  /api/user/logout:
+  /api/auth/logout:
     post:
       summary:  Logging out a user
       produces: 
