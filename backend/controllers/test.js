@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { ObjectId } = require('mongodb');
+const moment = require("moment");
 
 // Importing modules
 const Test = require('../models/test');
@@ -18,21 +19,15 @@ const createTest = async (req, res) => {
        
         // EDIT AFTER TESTING
         const currentUser = req.user ? req.user : {
-            _id:3,
-            name: "Rosita",
-            username: "rosita07",
-            type: "TEACHER",
-            test: [{testId: 1, marksObtained: 5}, {testId: 3, marksObtained: 2}],
-            standard: 3
-        
+            _id:"6265365b4ae495e9742869f1",
+            name: "ABCD",
+            username: "abcd1234",
+            type: "TEACHER"
         }
        
         let newTest = new Test({...req.body, questionIds: questionIds, teacherId: currentUser._id});
 
-        // currentUser.testscreated.push(newTest._id);
-
         await newTest.save();
-        // await currentUser.save();
 
         res.status(201).json({
             message: 'Test created successfully!',
@@ -95,6 +90,23 @@ const endTest = async (req, res) => {
             return;
         }
         
+        const currentTime = moment().format();
+
+        // Date in the database should be in the format "YYYY-MM-DD" and time in "HH:MM:SS". Both string
+        const dueDate = test.date;
+        const dueTime = test.time;
+        const dateTime = moment(`${dueDate} ${dueTime}`, 'YYYY-MM-DD HH:mm:ss').format();
+
+        // Duration should be the number of minutes of the test
+        const endTime = moment(dateTime).add(test.duration, 'minutes').format();
+ 
+        if (currentTime > endTime) {
+            res.status(400).json({
+                message: 'Due time has passed',
+            });
+            return;
+        }
+
         currentUser.test.push({testId: test._id, marksObtained: req.body.marks});
         
         await currentUser.save();
@@ -115,7 +127,7 @@ const getTestsByStandard = async (req, res) => {
         const currentUser = req.user
         const standard = currentUser.standard
         let tests = await Test.find({standard});
-
+        
         res.status(200).json({
             tests
         });

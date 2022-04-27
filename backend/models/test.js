@@ -33,6 +33,12 @@ const testSchema = new mongoose.Schema(
             trim: true
         },
 
+        date: {
+            type: String,
+            required: true,
+            trim: true
+        },
+
         time: {
             type: String,
             required: true,
