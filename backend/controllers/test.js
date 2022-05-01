@@ -128,6 +128,26 @@ const getTestsByStandard = async (req, res) => {
         const standard = currentUser.standard
         let tests = await Test.find({standard});
         
+        const currentTime = moment().format();
+        
+        await Promise.all (tests.map((test) => {
+        const dueDate = test.date;
+        const dueTime = test.time;
+        const dateTime = moment(`${dueDate} ${dueTime}`, 'YYYY-MM-DD HH:mm:ss').format();
+        const endTime = moment(dateTime).add(test.duration, 'minutes').format();
+
+        if (currentTime > endTime) {
+            test.status = "COMPLETED";
+        } else if (currentTime < dueTime) {
+            test.status = "UPCOMING"
+        } else {
+            test.status = "ONGOING"
+        }
+        await test.save();
+        }))
+        
+        
+
         res.status(200).json({
             tests
         });
@@ -155,7 +175,7 @@ const getAttemptedTests = async (req, res) => {
             const test = await Test.findById(testId);
             tests.push(test)
         }))
-     
+        
         res.status(200).json({
             tests
         });
