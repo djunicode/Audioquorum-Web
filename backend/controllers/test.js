@@ -130,7 +130,7 @@ const getTestsByStandard = async (req, res) => {
         
         const currentTime = moment().format();
         
-        await Promise.all (tests.map((test) => {
+        await Promise.all (tests.map(async (test) => {
         const dueDate = test.date;
         const dueTime = test.time;
         const dateTime = moment(`${dueDate} ${dueTime}`, 'YYYY-MM-DD HH:mm:ss').format();
