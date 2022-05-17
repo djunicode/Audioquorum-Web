@@ -11,11 +11,11 @@ exports.loginUser = async (req, res) => {
 			return;
 		}
 		
-		const token = user.generateAuthToken();
-		res.cookie('token', token, { httpOnly: true, maxAge: 1000 * 86400});
+		const token = await user.generateAuthToken();
 		res.status(200).json({
 			message: 'Successfully logged in!',
-			user
+			user,
+			token
 		});
     } catch(error){
       	res.status(400).json({
@@ -26,10 +26,18 @@ exports.loginUser = async (req, res) => {
 
 exports.logoutUser = async (req,res) => {
 	try {
-		res.cookie('token', '', { maxAge: 1 })
-  		res.status(200).json({
-    		message: 'Successfully logged out!',
-  		});
+		const token = req.token;
+        const currentUser = req.user;
+
+        currentUser.tokens = currentUser.tokens.filter((usertoken) => {
+            return usertoken.token !== token;
+        });
+
+        await currentUser.save();
+
+        res.status(200).json({
+            message: 'Logged Out Successfully'
+        });
 	} catch (error) {
 		res.status(400).json({
 			message: error.message

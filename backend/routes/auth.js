@@ -1,4 +1,5 @@
 const express = require('express');
+const auth = require('../middlewares/auth');
 const {
   loginUser,
   logoutUser
@@ -10,7 +11,7 @@ const router = new express.Router();
 router.post('/login', loginUser )
 
 //Logout User - Public
-router.post('/logout', logoutUser)
+router.post('/logout', auth.verifyjwt, logoutUser)
 
 // Exporting Modules
 module.exports = router;

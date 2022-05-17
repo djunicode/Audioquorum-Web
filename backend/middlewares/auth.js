@@ -6,15 +6,18 @@ const User = require('../models/user')
 let auth = {
 	verifyjwt:  async (req, res, next) => {
 		try{
-			const token = req.cookies.token;
+			const token = req.header('Authorization').replace('Bearer ', '');
 			const decoded = jwt.verify(token, process.env.JWT_SECRET);
-			const user = await User.findById(decoded._id);
+			const user = await User.findOne({ _id: decoded._id, 'tokens.token': token });
 
 			if (!user) {
-				throw new Error();
+				res.status(401).send({
+					message: 'Please Authenticate'
+				});
 			}
 
 			req.user = user;
+			req.token = token;
 			next();
 		} catch (e) {
 			res.status(401).send({error: 'Please authenticate'});
