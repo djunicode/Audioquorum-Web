@@ -1,5 +1,9 @@
 import { Routes, Route } from 'react-router-dom'
 import './App.css';
+import { ThemeProvider } from '@mui/material/styles';
+import {theme} from "./styles/theme";
+
+import Navbar from './components/Navbar';
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
@@ -10,9 +14,11 @@ import { AnnualReport } from './pages/AnnualReport';
 import { AddQuiz } from './pages/AddQuiz';
 import { AddQuestions } from './pages/AddQuestions';
 
+
 function App() {
   return (
-    <div>
+    <ThemeProvider theme={theme}>
+      <Navbar/>
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login />} />
@@ -24,7 +30,9 @@ function App() {
         <Route path='/add-quiz' element={<AddQuiz />} />
         <Route path='/add-questions' element={<AddQuestions />} />
       </Routes>
-    </div>
+    
+    </ThemeProvider>
+    
   );
 }
 
