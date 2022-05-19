@@ -1,6 +1,6 @@
 // Import React
 import * as React from "react";
-
+import { useState } from "react";
 // Import Material UI components
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
@@ -17,9 +17,52 @@ import Divider from "@mui/material/Divider";
 // Import React Router DOM functions
 import {useNavigate} from "react-router-dom";
 
+// Import api request functions
+import { signupPost } from "../api/api";
+
 export const Signup = () => {
 
   const navigate = useNavigate();
+  const [emailError, setEmailError] = useState("");
+  const [pwError, setPwError] = useState("");
+  const [confirmPwError, setConfirmPwError] = useState("");
+  
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setEmailError("");
+    setPwError("");
+    setConfirmPwError("");
+    const data = new FormData(event.currentTarget);
+    // eslint-disable-next-line no-console
+
+    // FORM VALIDATION
+    if (!data.get('email')) {
+      setEmailError('Please Enter Email ID');
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(data.get('email'))) {
+      setEmailError('Invalid email address');
+    } else if(data.get('password').length < 6) {
+      setPwError("Password too short.")
+    } else if (data.get('password') !== data.get('confirmPassword')) {
+        setConfirmPwError("This field does not match with the password.")
+    } else {
+      try {
+        const response = await signupPost({
+          name: data.get('name'),
+          username: data.get('username'),
+          password: data.get('password'),
+          email: data.get('email'),
+          type: "TEACHER"
+        });
+        
+        navigate("/signup", {replace: true});
+      }
+      catch(err) {
+        console.log(err);
+      }
+    }
+    
+
+  };
   return (
     <Box
       sx={{
@@ -47,8 +90,28 @@ export const Signup = () => {
         >
           SIGN UP
         </Typography>
-        <Box component="form" noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
         <FormControl variant="standard" fullWidth>
+            <InputLabel
+              shrink
+              htmlFor="name"
+              sx={{ color: "#000", fontWeight: 500, fontSize: 22 }}
+            >
+              Name
+            </InputLabel>
+            <TextField
+              sx={{ mt: 3 }}
+              required
+              margin="normal"
+              fullWidth
+              id="name"
+              name="name"
+              autoFocus
+              variant="filled"
+              hiddenLabel
+            />
+          </FormControl>
+        <FormControl variant="standard" fullWidth sx={{ mt: 3 }}>
             <InputLabel
               shrink
               htmlFor="username"
@@ -87,6 +150,8 @@ export const Signup = () => {
               autoFocus
               variant="filled"
               hiddenLabel
+              error = {emailError === "" ? false : true}
+              helperText = {emailError === "" ? "" : emailError}
             />
           </FormControl>
           <FormControl variant="standard" fullWidth sx={{ mt: 3 }}>
@@ -95,7 +160,7 @@ export const Signup = () => {
               htmlFor="password"
               sx={{ color: "#000", fontWeight: 500, fontSize: 22 }}
             >
-              Confirm Password
+              Password
             </InputLabel>
             <TextField
               sx={{ mt: 3 }}
@@ -108,6 +173,8 @@ export const Signup = () => {
               autoComplete="new-password"
               variant="filled"
               hiddenLabel
+              error = {pwError === "" ? false : true}
+              helperText = {pwError === "" ? "" : pwError}
             />
           </FormControl>
           <FormControl variant="standard" fullWidth sx={{ mt: 3 }}>
@@ -116,7 +183,7 @@ export const Signup = () => {
               htmlFor="confirmPassword"
               sx={{ color: "#000", fontWeight: 500, fontSize: 22 }}
             >
-              Password
+              Confirm Password
             </InputLabel>
             <TextField
               sx={{ mt: 3 }}
@@ -129,6 +196,9 @@ export const Signup = () => {
               autoComplete="new-password"
               variant="filled"
               hiddenLabel
+              error = {confirmPwError === "" ? false : true}
+              helperText = {confirmPwError === "" ? "" : confirmPwError}
+              
             />
           </FormControl>
 

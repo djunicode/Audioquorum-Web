@@ -14,8 +14,8 @@ import { AnnualReport } from './pages/AnnualReport';
 import { AddQuiz } from './pages/AddQuiz';
 import { AddQuestions } from './pages/AddQuestions';
 
-
 function App() {
+
   return (
     <ThemeProvider theme={theme}>
       <Navbar/>

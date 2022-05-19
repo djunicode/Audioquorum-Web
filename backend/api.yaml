@@ -1,0 +1,314 @@
+swagger: "2.0"
+info:
+  title: Audioquorum APIs
+  description: This is the API Documentation
+  version: 1.0
+
+  servers:
+    -url: http://localhost:5001
+    description: This is my local server
+
+schemes: [http,https]
+
+paths:
+  # Create Users
+  /api/admin/user/create:
+    post:
+      summary:  Creating a new user
+      produces: 
+        - application/json
+      consumes: 
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          schema:
+            type: object
+            properties:
+              name: 
+                type: string
+                default: "xxxx"
+              username: 
+                type: string
+                default: "xxxx"
+              password: 
+                type: string
+                default: "xxxx"
+              type:
+                type: string
+                default: "TEACHER"
+      responses: 
+       201:
+        description: Success, new user added successfully
+       400:
+        description: Unable to register, error
+  
+  # View User
+  /api/admin/user/view:
+    get:
+      summary: Returns the data of a user
+      produces: 
+        - application/json
+      consumes: 
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          schema:
+            type: object
+            properties:
+              userid:
+                type: string
+                default: "00000"             
+      responses: 
+        200:
+        description: Successful Response
+        400:
+        description: Error please check
+
+  # View Users
+  /api/admin/user/viewAll:
+    get:
+      summary: Returns a list of users.
+      description: People Who are already registered
+      responses:
+        200:    # status code
+          description: Successful Response
+        400:
+          description: Error please check
+  
+  # Update Users:
+  /api/admin/user/update:
+    put:
+      summary:  Updating a user's details
+      produces: 
+        - application/json
+      consumes: 
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          schema:
+            type: object
+            properties:
+              username: 
+                type: string
+                default: "myUsername"
+              password: 
+                type: string
+                default: "myPassword"
+              name:
+                type: string
+                default: "myName"              
+      responses: 
+       200:
+        description: Success, updated user sucessfully
+       400:
+        description: Unable to update, error occured
+
+  # Delete Users:
+  /api/admin/user/delete:
+    delete:
+      summary:  Deleting a user
+      produces: 
+        - application/json
+      consumes: 
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          schema:
+            type: object
+            properties:
+              userid:
+                type: string
+                default: "00000"             
+      responses: 
+       200:
+        description: Success, deleted user sucesfully
+       400:
+        description: Unable to delete, error occured
+
+  # Login Users:
+  /api/auth/login:
+    post:
+      summary:  Logging in a user
+      produces: 
+        - application/json
+      consumes: 
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          schema:
+            type: object
+            properties:
+              username: 
+                type: string
+                default: "username"
+              password: 
+                type: string
+                default: "myPassword"              
+      responses: 
+       200:
+        description: Success, logged in sucesfully
+       400:
+        description: Unable to login, error occured
+
+  # Logout Users:
+  /api/auth/logout:
+    post:
+      summary:  Logging out a user
+      produces: 
+        - application/json
+      consumes: 
+        - application/json
+      responses: 
+       200:
+        description: Successfully logged out user
+       500:
+        description: Internal server error occured
+
+  # View Student by ID
+  /api/student/view:
+    get:
+      summary: Returns a particular students
+      description: Student who is already registered
+      produces: 
+        - application/json
+      consumes: 
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          schema:
+            type: object
+            properties:
+              userid:
+                type: string
+                default: "00000"
+      responses:
+        200:    # status code
+          description: Successful Response
+        400:
+          description: Error! Please check.
+
+  # View Students
+  /api/student/viewAll:
+    get:
+      summary: Returns a list of students.
+      description: Students Who are already registered
+      responses:
+        200:    # status code
+          description: Successful Response
+        400:
+          description: Error please check
+
+  # Create Tests
+  /api/test/create:
+    post:
+      summary:  Creating a new test
+      produces: 
+        - application/json
+      consumes: 
+        - application/json
+      parameters:
+        - in: body
+          name: test
+          schema:
+            type: object
+            properties:
+              name: 
+                type: string
+                default: "xxxx"
+              description: 
+                type: string
+                default: "xxxx"
+              subject: 
+                type: string
+                default: "xxxx"
+              duration:
+                type: number
+                default: "00"
+              time:
+                type: string
+                default: "12:00"
+              totalQuestions:
+                type: number
+                default: "00"
+              totalMarks:
+                type: number
+                default: "00"
+      responses: 
+       201:
+        description: Success, new test created successfully
+       400:
+        description: Unable to register, error
+
+  # View attempted tests
+  /api/test/view/attempted:
+    get:
+      summary: Returns a list of tests attempted by students
+      description: Attempted tests
+      responses:
+        200:    # status code
+          description: Successful Response
+        400:
+          description: Error please check
+
+  # View tests by standard
+  /api/test/view/standard:
+    get:
+      summary: Returns a list of all tests
+      description: All created tests
+      responses:
+        200:    # status code
+          description: Successful Response
+        400:
+          description: Error please check
+
+  # Start Test:
+  /api/test/start:
+    put:
+      summary:  Starting a test
+      produces: 
+        - application/json
+      consumes: 
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          schema:
+            type: object
+            properties:
+              userid: 
+                type: string
+                default: "0000"        
+      responses: 
+       200:
+        description: Success, test started sucessfully
+       400:
+        description: Unable to update, error occured
+
+  # End Test:
+  /api/test/end:
+    put:
+      summary:  Ending a test
+      produces: 
+        - application/json
+      consumes: 
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          schema:
+            type: object
+            properties:
+              userid: 
+                type: string
+                default: "0000"        
+      responses: 
+       200:
+        description: Success, test ended sucessfully
+       400:
+        description: Unable to update, error occured

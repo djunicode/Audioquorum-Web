@@ -23,8 +23,18 @@ const testSchema = new mongoose.Schema(
             trim: true
         },
 
+        standard: {
+            type: String
+        },
+
         duration: {
             type: Number,
+            required: true,
+            trim: true
+        },
+
+        date: {
+            type: String,
             required: true,
             trim: true
         },
@@ -33,6 +43,11 @@ const testSchema = new mongoose.Schema(
             type: String,
             required: true,
             trim: true
+        },
+
+        status: {
+            type: String,
+            enum: ["UPCOMING", "ONGOING", "COMPLETED"]
         },
 
         questionIds: [{
@@ -65,7 +80,7 @@ const testSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-const Test = mongoose.model('Test', TestSchema);
+const Test = mongoose.model('Test', testSchema);
 
 // Exporting modules
 module.exports = Test;

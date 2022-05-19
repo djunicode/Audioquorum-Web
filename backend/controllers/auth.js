@@ -1,27 +1,46 @@
-const User = require('../models/User')
+const User = require('../models/user')
 
 exports.loginUser = async (req, res) => {
     try{
-      const user = await User.findByCredentials(req.body.username, req.body.password)
-  
-      const token = user.generateAuthToken()
+		const user = await User.findByCredentials(req.body.username, req.body.password);
 
-      res.cookie('token', token, { httpOnly: true, maxAge: 1000*86400})
-  
-      res.json({
-        success: true,
-        user
-      })
-  
-    } catch(e){
-      console.log(e)
-      res.status(400).json({
-        success: false
-      })
+		if (!user) {
+			res.status(404).json({
+				message: 'User not found!'
+			});
+			return;
+		}
+		
+		const token = await user.generateAuthToken();
+		res.status(200).json({
+			message: 'Successfully logged in!',
+			user,
+			token
+		});
+    } catch(error){
+      	res.status(400).json({
+        	message: error.message
+		});
     }
-  }
+}
 
 exports.logoutUser = async (req,res) => {
-  res.cookie('token', '', { maxAge: 1 })
-  
-  }
+	try {
+		const token = req.token;
+        const currentUser = req.user;
+
+        currentUser.tokens = currentUser.tokens.filter((usertoken) => {
+            return usertoken.token !== token;
+        });
+
+        await currentUser.save();
+
+        res.status(200).json({
+            message: 'Logged Out Successfully'
+        });
+	} catch (error) {
+		res.status(400).json({
+			message: error.message
+		});
+	}
+}

@@ -17,9 +17,34 @@ import Divider from "@mui/material/Divider";
 // Import React Router DOM functions
 import {useNavigate} from "react-router-dom";
 
+// Import Api requests
+import {loginPost} from "../api/api";
+
 export const Login = () => {
 
   const navigate = useNavigate();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    // eslint-disable-next-line no-console
+    
+      const response = await loginPost({
+        username: data.get('username'),
+        password: data.get('password'),
+      });
+      
+
+      if (response.token) {
+        localStorage.setItem("token", response.token);
+        navigate("/dashboard", {replace: true})
+      } else {
+        console.log(response);
+      }
+      
+      
+    
+     };
+  
   return (
     <Box
       sx={{
@@ -46,7 +71,7 @@ export const Login = () => {
         >
           LOG IN
         </Typography>
-        <Box component="form" noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <FormControl variant="standard" fullWidth>
             <InputLabel
               shrink
@@ -113,6 +138,7 @@ export const Login = () => {
             fullWidth
             variant="contained"
             sx={{ mt: 1, mb: 2, fontSize: "20px", fontWeight: 600 }}
+
           >
             LOG IN
           </Button>

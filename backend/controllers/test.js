@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { ObjectId } = require('mongodb');
+const moment = require("moment");
 
 // Importing modules
 const Test = require('../models/test');
@@ -15,26 +16,18 @@ const createTest = async (req, res) => {
             await newQuestion.save();
             questionIds.push(newQuestion._id);
         }))
-
-        console.log(questionIds);
        
         // EDIT AFTER TESTING
         const currentUser = req.user ? req.user : {
-            _id:3,
-            name: "Rosita",
-            username: "rosita07",
-            type: "TEACHER",
-            test: [{testId: 1, marksObtained: 5}, {testId: 3, marksObtained: 2}],
-            standard: 3
-        
+            _id:"6265365b4ae495e9742869f1",
+            name: "ABCD",
+            username: "abcd1234",
+            type: "TEACHER"
         }
        
         let newTest = new Test({...req.body, questionIds: questionIds, teacherId: currentUser._id});
 
-        // currentUser.testscreated.push(newTest._id);
-
         await newTest.save();
-        // await currentUser.save();
 
         res.status(201).json({
             message: 'Test created successfully!',
@@ -50,7 +43,7 @@ const createTest = async (req, res) => {
 // Give a test
 const startTest = async (req, res) => {
     try {
-        const test = await Test.findById(req.body.testId);
+        const test = await Test.findById(req.body.testId).populate('questionIds', 'teacherId');
         let currentUser = req.user;
         
         if(!test) {
@@ -60,15 +53,21 @@ const startTest = async (req, res) => {
             return;
         }
         
-        
+        // Check if the user has previously given the test
+        if (currentUser.test.some(test => test.testId == req.body.testId)) {
+            res.status(400).json({
+                message: 'Test Already Attempted!',
+            });
+            return;
+        }
         currentUser.test.push({testId: test._id, marksObtained: null});
         test.userIds.push(currentUser._id);
-        
 
         await test.save();
         await currentUser.save();
         
         res.status(201).json({
+            data: test,
             message: 'Test started successfully!'
         });
     } catch(error) {
@@ -77,7 +76,6 @@ const startTest = async (req, res) => {
         });
     }
 };
-
 
 // End a test
 const endTest = async (req, res) => {
@@ -92,6 +90,23 @@ const endTest = async (req, res) => {
             return;
         }
         
+        const currentTime = moment().format();
+
+        // Date in the database should be in the format "YYYY-MM-DD" and time in "HH:MM:SS". Both string
+        const dueDate = test.date;
+        const dueTime = test.time;
+        const dateTime = moment(`${dueDate} ${dueTime}`, 'YYYY-MM-DD HH:mm:ss').format();
+
+        // Duration should be the number of minutes of the test
+        const endTime = moment(dateTime).add(test.duration, 'minutes').format();
+ 
+        if (currentTime > endTime) {
+            res.status(400).json({
+                message: 'Due time has passed',
+            });
+            return;
+        }
+
         currentUser.test.push({testId: test._id, marksObtained: req.body.marks});
         
         await currentUser.save();
@@ -106,16 +121,32 @@ const endTest = async (req, res) => {
     }
 };
 
-
-
 // View the user's available tests by standard
-
 const getTestsByStandard = async (req, res) => {
     try {
-        
         const currentUser = req.user
         const standard = currentUser.standard
         let tests = await Test.find({standard});
+        
+        const currentTime = moment().format();
+        
+        await Promise.all (tests.map(async (test) => {
+        const dueDate = test.date;
+        const dueTime = test.time;
+        const dateTime = moment(`${dueDate} ${dueTime}`, 'YYYY-MM-DD HH:mm:ss').format();
+        const endTime = moment(dateTime).add(test.duration, 'minutes').format();
+
+        if (currentTime > endTime) {
+            test.status = "COMPLETED";
+        } else if (currentTime < dueTime) {
+            test.status = "UPCOMING"
+        } else {
+            test.status = "ONGOING"
+        }
+        await test.save();
+        }))
+        
+        
 
         res.status(200).json({
             tests
@@ -127,10 +158,7 @@ const getTestsByStandard = async (req, res) => {
     }
 };
 
-
-
 // View the user's attempted tests
-
 const getAttemptedTests = async (req, res) => {
     try {
 
@@ -147,17 +175,15 @@ const getAttemptedTests = async (req, res) => {
             const test = await Test.findById(testId);
             tests.push(test)
         }))
-     
+        
         res.status(200).json({
             tests
         });
-
     } catch(error) {
         res.status(400).json({
             message: error.message
         });
     }
 };
-
 
 module.exports = {createTest, getTestsByStandard, getAttemptedTests, startTest, endTest}
