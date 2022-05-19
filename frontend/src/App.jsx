@@ -13,9 +13,12 @@ import { Quiz } from './pages/Quiz';
 import { AnnualReport } from './pages/AnnualReport';
 import { AddQuiz } from './pages/AddQuiz';
 import { AddQuestions } from './pages/AddQuestions';
-
+import axios from 'axios';
 
 function App() {
+
+  // const token = localStorage.getItem("token");
+  // axios.defaults.headers.common = {'Authorization': `Bearer ${token}`};
   return (
     <ThemeProvider theme={theme}>
       <Navbar/>
