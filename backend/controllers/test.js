@@ -17,13 +17,7 @@ const createTest = async (req, res) => {
             questionIds.push(newQuestion._id);
         }))
        
-        // EDIT AFTER TESTING
-        const currentUser = req.user ? req.user : {
-            _id:"6265365b4ae495e9742869f1",
-            name: "ABCD",
-            username: "abcd1234",
-            type: "TEACHER"
-        }
+        const currentUser = req.user;
        
         let newTest = new Test({...req.body, questionIds: questionIds, teacherId: currentUser._id});
 
