@@ -45,7 +45,7 @@ const questionSchema = new mongoose.Schema(
         },
 
         marks: {
-            type: String,
+            type: Number,
             required: true
         },
     },
