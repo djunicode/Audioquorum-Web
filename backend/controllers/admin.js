@@ -5,7 +5,13 @@ const User = require('../models/user.js');
 const createUser = async (req, res) => {
     try {
         let newUser = new User(req.body);
+        
+        newUser.totalMarks = Number(0);
+		newUser.testMarks = Number(0);
+		newUser.percentage = Number(0);
+
         await newUser.save();
+
         res.status(201).json({
             message: 'User created!'
         });

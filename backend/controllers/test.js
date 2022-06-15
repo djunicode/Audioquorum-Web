@@ -1,29 +1,20 @@
-const mongoose = require("mongoose");
-const { ObjectId } = require('mongodb');
-const moment = require("moment");
-
 // Importing modules
+const mongoose = require('mongoose');
+const { ObjectId } = require('mongodb');
+const moment = require('moment');
 const Test = require('../models/test');
 const Question = require('../models/question');
 
 // Create Event
 const createTest = async (req, res) => {
     try {
- 
-        const questionIds = []
-        await Promise.all(req.body.questions.map( async (question) => {
+        let currentUser = req.user;
+        let questionIds = []
+        await Promise.all(req.body.questions.map(async (question) => {
             let newQuestion = new Question(question);
             await newQuestion.save();
             questionIds.push(newQuestion._id);
-        }))
-       
-        // EDIT AFTER TESTING
-        const currentUser = req.user ? req.user : {
-            _id:"6265365b4ae495e9742869f1",
-            name: "ABCD",
-            username: "abcd1234",
-            type: "TEACHER"
-        }
+        }));
        
         let newTest = new Test({...req.body, questionIds: questionIds, teacherId: currentUser._id});
 
@@ -43,10 +34,10 @@ const createTest = async (req, res) => {
 // Give a test
 const startTest = async (req, res) => {
     try {
-        const test = await Test.findById(req.body.testId).populate('questionIds', 'teacherId');
+        const currentTest = await Test.findById(req.body.testId).populate('questionIds', 'teacherId');
         let currentUser = req.user;
         
-        if(!test) {
+        if(!currentTest) {
             res.status(404).json({
                 message: 'Test Not Found!',
             });
@@ -60,14 +51,39 @@ const startTest = async (req, res) => {
             });
             return;
         }
-        currentUser.test.push({testId: test._id, marksObtained: null});
-        test.userIds.push(currentUser._id);
 
-        await test.save();
+        const currentTime = moment().format();
+        
+        // Date in the database should be in the format "YYYY-MM-DD" and time in "HH:MM:SS". Both string
+        const dueDate = currentTest.date;
+        const dueTime = currentTest.time;
+        const startTime = moment(`${dueDate} ${dueTime}`, 'YYYY-MM-DD HH:mm:ss').format();
+
+        // Duration should be the number of minutes of the test
+        const endTime = moment(startTime).add(currentTest.duration, 'minutes').format();
+
+        if (currentTime < startTime) {
+            res.status(400).json({
+                message: `Test hasn't started!`,
+            });
+            return;
+        }
+ 
+        if (currentTime > endTime) {
+            res.status(400).json({
+                message: 'Due time has passed!',
+            });
+            return;
+        }
+
+        currentUser.test.push({testId: currentTest._id, marksObtained: 0, average: 0});
+        currentTest.userIds.push(currentUser._id);
+
+        await currentTest.save();
         await currentUser.save();
         
         res.status(201).json({
-            data: test,
+            data: currentTest,
             message: 'Test started successfully!'
         });
     } catch(error) {
@@ -80,10 +96,10 @@ const startTest = async (req, res) => {
 // End a test
 const endTest = async (req, res) => {
     try {
-        const test = await Test.findById(req.body.testId);
+        const currentTest = await Test.findById(req.body.testId);
         let currentUser = req.user;
         
-        if(!test) {
+        if(!currentTest) {
             res.status(404).json({
                 message: 'Test Not Found!',
             });
@@ -93,26 +109,38 @@ const endTest = async (req, res) => {
         const currentTime = moment().format();
 
         // Date in the database should be in the format "YYYY-MM-DD" and time in "HH:MM:SS". Both string
-        const dueDate = test.date;
-        const dueTime = test.time;
-        const dateTime = moment(`${dueDate} ${dueTime}`, 'YYYY-MM-DD HH:mm:ss').format();
+        const dueDate = currentTest.date;
+        const dueTime = currentTest.time;
+        const startTime = moment(`${dueDate} ${dueTime}`, 'YYYY-MM-DD HH:mm:ss').format();
 
         // Duration should be the number of minutes of the test
-        const endTime = moment(dateTime).add(test.duration, 'minutes').format();
+        const endTime = moment(startTime).add(currentTest.duration, 'minutes').format();
+
+        if (currentTime < startTime) {
+            res.status(400).json({
+                message: `Test hasn't started!`,
+            });
+            return;
+        }
  
         if (currentTime > endTime) {
             res.status(400).json({
-                message: 'Due time has passed',
+                message: 'Due time has passed!',
             });
             return;
         }
 
-        let testAverage = req.body.marks / test.totalMarks;
-        currentUser.totalMarks = currentUser.totalMarks + req.body.marks;
-        currentUser.testMarks = currentUser.testMarks + test.totalMarks;
+        let testAverage = Number((req.body.marks / currentTest.totalMarks) * 100);
+        currentUser.totalMarks = currentUser.totalMarks + Number(req.body.marks);
+        currentUser.testMarks = currentUser.testMarks + currentTest.totalMarks;
         currentUser.percentage = (currentUser.totalMarks / currentUser.testMarks) * 100;
 
-        currentUser.test.push({testId: test._id, marksObtained: req.body.marks, average: testAverage});
+        currentUser.test.forEach((test) => {
+            if (String(test.testId) === req.body.testId) {
+                test.marksObtained = req.body.marks;
+                test.average = testAverage;
+            }
+        });
         
         await currentUser.save();
         
@@ -136,22 +164,20 @@ const getTestsByStandard = async (req, res) => {
         const currentTime = moment().format();
         
         await Promise.all (tests.map(async (test) => {
-        const dueDate = test.date;
-        const dueTime = test.time;
-        const dateTime = moment(`${dueDate} ${dueTime}`, 'YYYY-MM-DD HH:mm:ss').format();
-        const endTime = moment(dateTime).add(test.duration, 'minutes').format();
+            const dueDate = test.date;
+            const dueTime = test.time;
+            const dateTime = moment(`${dueDate} ${dueTime}`, 'YYYY-MM-DD HH:mm:ss').format();
+            const endTime = moment(dateTime).add(test.duration, 'minutes').format();
 
-        if (currentTime > endTime) {
-            test.status = "COMPLETED";
-        } else if (currentTime < dueTime) {
-            test.status = "UPCOMING"
-        } else {
-            test.status = "ONGOING"
-        }
-        await test.save();
-        }))
-        
-        
+            if (currentTime > endTime) {
+                test.status = "COMPLETED";
+            } else if (currentTime < dueTime) {
+                test.status = "UPCOMING"
+            } else {
+                test.status = "ONGOING"
+            }
+            await test.save();
+        }));
 
         res.status(200).json({
             tests
@@ -166,7 +192,6 @@ const getTestsByStandard = async (req, res) => {
 // View the user's attempted tests
 const getAttemptedTests = async (req, res) => {
     try {
-
         const currentUser = req.user;
 
         const testsGiven = []
