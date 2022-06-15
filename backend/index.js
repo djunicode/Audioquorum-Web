@@ -25,23 +25,25 @@ const adminRouter = require('./routes/admin');
 const authRouter = require('./routes/auth');
 const studentRouter = require('./routes/student');
 const testRouter = require('./routes/test');
-//const fileUpload = require('express-fileupload');
 
+// Assigning Routes
 app.use('/api/auth', authRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/student', studentRouter);
 app.use('/api/test', testRouter);
-//app.use(fileUpload());
 
+// Test Route
 app.get('/api', (req, res) => {
-    res.json({ message: "Hello from server!" });
+	res.json({ message: "Hello from server!" });
 });
 
-
+// Setting the port 
 let port = process.env.PORT;
 if (port == null || port == "") {
-  port = 8000;
+	port = 8000;
 }
+
+// Starting the server
 app.listen(port, () => {
-  console.log(`Server listening on ${port}`);
+	console.log(`Server listening on ${port}`);
 });
