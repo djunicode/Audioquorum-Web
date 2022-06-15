@@ -5,6 +5,7 @@ const {
   logoutUser
 } = require('../controllers/auth');
 
+// Initializing router
 const router = new express.Router();
 
 //Login User - Public
