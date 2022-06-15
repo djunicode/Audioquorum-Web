@@ -1,5 +1,6 @@
 // Import modules
-const User = require("../models/user")
+const User = require('../models/user');
+const Test = require('../models/test');
 
 // View a student by their id mentioned in the body of the request
 const viewStudentById = async (req, res) => {
@@ -61,4 +62,79 @@ const viewAllStudents = async (req, res) => {
     }
 }
 
-module.exports = {viewStudentById, viewAllStudents};
+const viewStudentsByTest = async (req, res) => {
+    try {
+        // Find test by id
+        const currentTest = await Test.findById(req.body.testId);
+
+        // Checking if the test exists
+        if (!currentTest) {
+            res.status(404).json({
+                message: 'Test not found!'
+            });
+            return;
+        }
+
+        // Storing students data
+        var students = [];
+        for (let i = 0; i < currentTest.userIds.length; i++) {
+            let user = await User.findById(currentTest.userIds[i]);
+            students.push(user);
+        }
+
+        // Formatting Data;
+        students.forEach((student) => {
+            student.test = student.test.filter(function (entry) { return String(entry.testId) === req.body.testId; });
+
+            student.username = undefined;
+            student.password = undefined;
+            student.totalMarks = undefined;
+            student.testMarks = undefined;
+            student.tokens = undefined;
+        });
+        
+        // Send students data
+        res.status(200).json({
+            data: students
+        });
+    } catch (err) {
+        res.status(400).json({
+            message: err.message
+        });
+    }
+};
+
+const studentsAnnualReport = async (req, res) => {
+    try {
+        // Find all users with student type
+        const students = await User.find({type: 'STUDENT'});
+
+        // Checking for zero students
+        if (students.length == 0) {
+            res.status(404).json({
+                message: 'No user found!'
+            });
+            return;
+        }
+
+        // Formatting the data
+        students.forEach((student) => {
+            student.username = undefined;
+            student.password = undefined;
+            student.test = undefined;
+            student.testMarks = undefined;
+            student.tokens = undefined;
+        });
+
+        // Send students as data
+        res.status(200).json({
+            data: students
+        });
+    } catch (err) {
+        res.status(400).json({
+            message: err.message
+        });
+    }
+};
+
+module.exports = {viewStudentById, viewAllStudents, viewStudentsByTest, studentsAnnualReport};

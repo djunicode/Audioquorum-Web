@@ -25,6 +25,11 @@ const userSchema = new mongoose.Schema (
             maxlength: [20, 'username too long!']
         },
 
+        rollno: {
+            type: Number,
+            // required: true
+        },
+
         password: {
             type: String,
             required: true,
@@ -50,9 +55,25 @@ const userSchema = new mongoose.Schema (
             },
 
             marksObtained: {
-                type: String
+                type: Number
+            },
+
+            average: {
+                type: Number
             }
         }],
+
+        totalMarks: {
+            type: Number
+        },
+
+        testMarks: {
+            type: Number
+        },
+
+        percentage: {
+            type: Number
+        },
 
         tokens: [{
             token: {

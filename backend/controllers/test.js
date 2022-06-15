@@ -101,7 +101,12 @@ const endTest = async (req, res) => {
             return;
         }
 
-        currentUser.test.push({testId: test._id, marksObtained: req.body.marks});
+        let testAverage = req.body.marks / test.totalMarks;
+        currentUser.totalMarks = currentUser.totalMarks + req.body.marks;
+        currentUser.testMarks = currentUser.testMarks + test.totalMarks;
+        currentUser.percentage = (currentUser.totalMarks / currentUser.testMarks) * 100;
+
+        currentUser.test.push({testId: test._id, marksObtained: req.body.marks, average: testAverage});
         
         await currentUser.save();
         
