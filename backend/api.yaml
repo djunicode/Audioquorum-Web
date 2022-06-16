@@ -62,9 +62,9 @@ paths:
                 default: "00000"             
       responses: 
         200:
-        description: Successful Response
+          description: Successful Response
         400:
-        description: Error please check
+          description: Error please check
 
   # View Users
   /api/admin/user/viewAll:
@@ -344,6 +344,30 @@ paths:
           description: Successful Response
         400:
           description: Error please check
+  
+  # View tests by subject
+  /api/test/view/TestbySubj:
+    get:
+      summary: Returns a list of all tests by Subject
+      description: All tests by subject
+      responses:
+        200:    # status code
+          description: Successful Response
+        400:
+          description: Error please check
+
+  # View tests by 
+  /api/test/view/All:
+    get:
+      summary: Returns a list of all tests
+      description: All tests 
+      responses:
+        200:    # status code
+          description: Successful Response
+        400:
+          description: Error please check
+  
+
 
   # Start Test:
   /api/test/start:

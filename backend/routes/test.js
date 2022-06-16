@@ -6,6 +6,8 @@ const {
     getAttemptedTests,
     getTestsByStandard,
     startTest,
+    getTestsBySubject,
+    getAllTests,
     endTest   
 } = require('../controllers/test');
 
@@ -18,6 +20,8 @@ router.get('/view/attempted', [auth.verifyjwt, auth.userTypeTeacherStudent], get
 
 router.get('/view/standard', [auth.verifyjwt, auth.userTypeTeacher], getTestsByStandard);
 
+router.get('/view/All',[auth.verifyjwt,auth.userTypeTeacher], getAllTests);
+router.get('/view/TestbySubj/:subject',[auth.verifyjwt,auth.userTypeTeacher], getTestsBySubject);
 router.put('/start', [auth.verifyjwt, auth.userTypeStudent], startTest);
 
 router.put('/end', [auth.verifyjwt, auth.userTypeStudent], endTest)
