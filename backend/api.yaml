@@ -5,7 +5,7 @@ info:
   version: 1.0
 
   servers:
-    -url: http://localhost:5001
+    -url: http://localhost:8000
     description: This is my local server
 
 schemes: [http,https]
@@ -62,9 +62,9 @@ paths:
                 default: "00000"             
       responses: 
         200:
-        description: Successful Response
+          description: Successful Response
         400:
-        description: Error please check
+          description: Error please check
 
   # View Users
   /api/admin/user/viewAll:
@@ -169,7 +169,7 @@ paths:
        500:
         description: Internal server error occured
 
-  # View Student by ID
+  # View Student by Student ID
   /api/student/view:
     get:
       summary: Returns a particular students
@@ -193,10 +193,45 @@ paths:
         400:
           description: Error! Please check.
 
+  # View Student by Test ID
+  /api/student/viewByTest:
+    get:
+      summary: Returns a particular student
+      description: Student who has given particular test
+      produces: 
+        - application/json
+      consumes: 
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          schema:
+            type: object
+            properties:
+              testId:
+                type: string
+                default: "00000"
+      responses:
+        200:    # status code
+          description: Successful Response
+        400:
+          description: Error! Please check.
+
   # View Students
   /api/student/viewAll:
     get:
       summary: Returns a list of students.
+      description: Students Who are already registered
+      responses:
+        200:    # status code
+          description: Successful Response
+        400:
+          description: Error please check
+
+  # View Students
+  /api/student/viewAnnualReport:
+    get:
+      summary: Returns a list of annual reports of all students.
       description: Students Who are already registered
       responses:
         200:    # status code
@@ -220,30 +255,73 @@ paths:
             properties:
               name: 
                 type: string
-                default: "xxxx"
+                default: "Matrices 1"
               description: 
                 type: string
-                default: "xxxx"
+                default: "1st of 5 tests on Matrices. Contains 5 questions of 5 marks each. Good Luck!"
               subject: 
                 type: string
-                default: "xxxx"
+                default: "Maths"
+              standard: 
+                type: string
+                default: "X"
               duration:
                 type: number
-                default: "00"
+                default: "60"
+              date:
+                type: string
+                default: "YYYY-MM-DD"
               time:
                 type: string
-                default: "12:00"
+                default: "HH:MM:SS"
+              status:
+                type: string
+                default: "UPCOMING/ONGOING/COMPLETED"
               totalQuestions:
                 type: number
-                default: "00"
+                default: "5"
               totalMarks:
                 type: number
-                default: "00"
+                default: "25"
+              questions:
+                type: array
+                items:
+                  properties:
+                    questionNo:
+                      type: string
+                      default: "1"
+                    question:
+                      type: string
+                      default: "This is question one"
+                    optionA:
+                      type: string
+                      default: "A"
+                    optionB:
+                      type: string
+                      default: "B"
+                    optionC:
+                      type: string
+                      default: "C"
+                    optionD:
+                      type: string
+                      default: "D"
+                    correctAnswer:
+                      type: string
+                      default: "A"
+                    explanation:
+                      type: string
+                      default: "A is true"
+                    marks:
+                      type: number
+                      default: "5"
+
       responses: 
        201:
         description: Success, new test created successfully
        400:
         description: Unable to register, error
+
+
 
   # View attempted tests
   /api/test/view/attempted:
@@ -266,6 +344,30 @@ paths:
           description: Successful Response
         400:
           description: Error please check
+  
+  # View tests by subject
+  /api/test/view/TestbySubj:
+    get:
+      summary: Returns a list of all tests by Subject
+      description: All tests by subject
+      responses:
+        200:    # status code
+          description: Successful Response
+        400:
+          description: Error please check
+
+  # View tests by 
+  /api/test/view/All:
+    get:
+      summary: Returns a list of all tests
+      description: All tests 
+      responses:
+        200:    # status code
+          description: Successful Response
+        400:
+          description: Error please check
+  
+
 
   # Start Test:
   /api/test/start:
@@ -281,7 +383,7 @@ paths:
           schema:
             type: object
             properties:
-              userid: 
+              testid: 
                 type: string
                 default: "0000"        
       responses: 
@@ -304,7 +406,7 @@ paths:
           schema:
             type: object
             properties:
-              userid: 
+              testid: 
                 type: string
                 default: "0000"        
       responses: 

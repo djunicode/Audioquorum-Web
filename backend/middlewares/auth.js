@@ -1,7 +1,7 @@
-require('dotenv').config()
-const e = require('express')
-const jwt = require('jsonwebtoken')
-const User = require('../models/user')
+// Importing modules
+const User = require('../models/user');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv').config();
 
 let auth = {
 	verifyjwt:  async (req, res, next) => {
@@ -11,16 +11,19 @@ let auth = {
 			const user = await User.findOne({ _id: decoded._id, 'tokens.token': token });
 
 			if (!user) {
-				res.status(401).send({
+				res.status(401).json({
 					message: 'Please Authenticate'
 				});
+				return;
 			}
 
 			req.user = user;
 			req.token = token;
 			next();
-		} catch (e) {
-			res.status(401).send({error: 'Please authenticate'});
+		} catch (error) {
+			res.status(400).json({
+				message: error.message
+			});
 		}
 	},
 
@@ -32,9 +35,12 @@ let auth = {
 				res.status(403).json({
 					message: 'Access Denied'
 				});
+				return;
 			}
-		} catch (e) {
-			res.status(401).send({error: e.message});
+		} catch (error) {
+			res.status(400).json({
+				message: error.message
+			});
 		}
 	},
 
@@ -46,9 +52,12 @@ let auth = {
 				res.status(403).json({
 					message: 'Access Denied'
 				});
+				return;
 			}
-		} catch (e) {
-			res.status(401).send({error: e.message});
+		} catch (error) {
+			res.status(400).json({
+				message: error.message
+			});
 		}
 	},
 
@@ -60,9 +69,12 @@ let auth = {
 				res.status(403).json({
 					message: 'Access Denied'
 				});
+				return;
 			}
-		} catch (e) {
-			res.status(401).send({error: e.message});
+		} catch (error) {
+			res.status(400).json({
+				message: error.message
+			});
 		}
 	},
 
@@ -74,9 +86,12 @@ let auth = {
 				res.status(403).json({
 					message: 'Access Denied'
 				});
+				return;
 			}
-		} catch (e) {
-			res.status(401).send({error: e.message});
+		} catch (error) {
+			res.status(400).json({
+				message: error.message
+			});
 		}
 	}
 }

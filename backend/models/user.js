@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema (
 
         test: [{
             testId: {
-                type: [mongoose.Schema.Types.ObjectId],
+                type: mongoose.Schema.Types.ObjectId,
                 ref: 'Test'
             },
 

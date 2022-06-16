@@ -68,12 +68,12 @@ const testSchema = new mongoose.Schema(
         },
 
         teacherId: {
-            type: [mongoose.Schema.Types.ObjectId],
+            type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
         },
 
         userIds: [{
-            type: [mongoose.Schema.Types.ObjectId],
+            type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
         }]
     },

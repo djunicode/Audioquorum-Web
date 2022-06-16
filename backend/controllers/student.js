@@ -30,9 +30,9 @@ const viewStudentById = async (req, res) => {
         res.status(200).json({
             data: student
         });
-    } catch (err) {
+    } catch (error) {
         res.status(400).json({
-            message: err.message
+            message: error.message
         }); 
     }
     
@@ -55,9 +55,9 @@ const viewAllStudents = async (req, res) => {
         res.status(200).json({
             data: students
         });
-    } catch (err) {
+    } catch (error) {
         res.status(400).json({
-            message: err.message
+            message: error.message
         }); 
     }
 }
@@ -97,9 +97,9 @@ const viewStudentsByTest = async (req, res) => {
         res.status(200).json({
             data: students
         });
-    } catch (err) {
+    } catch (error) {
         res.status(400).json({
-            message: err.message
+            message: error.message
         });
     }
 };
@@ -130,11 +130,16 @@ const studentsAnnualReport = async (req, res) => {
         res.status(200).json({
             data: students
         });
-    } catch (err) {
+    } catch (error) {
         res.status(400).json({
-            message: err.message
+            message: error.message
         });
     }
 };
 
-module.exports = {viewStudentById, viewAllStudents, viewStudentsByTest, studentsAnnualReport};
+module.exports = {
+    viewStudentById, 
+    viewAllStudents, 
+    viewStudentsByTest, 
+    studentsAnnualReport
+};

@@ -1,6 +1,8 @@
+// Importing Modules
 const User = require('../models/user')
 
-exports.loginUser = async (req, res) => {
+// Login 
+const loginUser = async (req, res) => {
     try{
 		const user = await User.findByCredentials(req.body.username, req.body.password);
 
@@ -12,6 +14,7 @@ exports.loginUser = async (req, res) => {
 		}
 		
 		const token = await user.generateAuthToken();
+		
 		res.status(200).json({
 			message: 'Successfully logged in!',
 			user,
@@ -24,7 +27,9 @@ exports.loginUser = async (req, res) => {
     }
 }
 
-exports.logoutUser = async (req,res) => {
+
+// Logout
+const logoutUser = async (req,res) => {
 	try {
 		const token = req.token;
         const currentUser = req.user;
@@ -44,3 +49,8 @@ exports.logoutUser = async (req,res) => {
 		});
 	}
 }
+
+module.exports = {
+	loginUser,
+	logoutUser
+};
