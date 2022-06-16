@@ -3,12 +3,13 @@ const express = require('express');
 const auth = require('../middlewares/auth');
 const {
     createTest,
-    getAttemptedTests,
-    getTestsByStandard,
     startTest,
-    getTestsBySubject,
+    endTest,   
     getAllTests,
-    endTest   
+    getTestsByStandard,
+    getAttemptedTests,
+    getTestsBySubject,
+    getCompletedTests
 } = require('../controllers/test');
 
 
@@ -16,15 +17,20 @@ const {
 const router = new express.Router();
 
 router.post('/create', [auth.verifyjwt, auth.userTypeTeacher], createTest);
-router.get('/view/attempted', [auth.verifyjwt, auth.userTypeTeacherStudent], getAttemptedTests);
 
-router.get('/view/standard', [auth.verifyjwt, auth.userTypeTeacher], getTestsByStandard);
-
-router.get('/view/All',[auth.verifyjwt,auth.userTypeTeacher], getAllTests);
-router.get('/view/TestbySubj/:subject',[auth.verifyjwt,auth.userTypeTeacher], getTestsBySubject);
 router.put('/start', [auth.verifyjwt, auth.userTypeStudent], startTest);
 
-router.put('/end', [auth.verifyjwt, auth.userTypeStudent], endTest)
+router.put('/end', [auth.verifyjwt, auth.userTypeStudent], endTest);
+
+router.get('/view/All',[auth.verifyjwt,auth.userTypeTeacher], getAllTests);
+
+router.get('/view/standard', [auth.verifyjwt, auth.userTypeStudent], getTestsByStandard);
+
+router.get('/view/attempted', [auth.verifyjwt, auth.userTypeTeacherStudent], getAttemptedTests);
+
+router.get('/view/TestbySubj/:subject',[auth.verifyjwt,auth.userTypeTeacher], getTestsBySubject);
+
+router.get('/view/completed', [auth.verifyjwt, auth.userTypeTeacher], getCompletedTests);
 
 // Exporting Modules
 module.exports = router;
