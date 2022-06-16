@@ -394,7 +394,7 @@ paths:
           schema:
             type: object
             properties:
-              testid: 
+              testId: 
                 type: string
                 default: "0000"        
       responses: 
@@ -417,7 +417,7 @@ paths:
           schema:
             type: object
             properties:
-              testid: 
+              testId: 
                 type: string
                 default: "0000" 
               marks:
