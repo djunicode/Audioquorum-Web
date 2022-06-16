@@ -228,7 +228,7 @@ paths:
         400:
           description: Error please check
 
-  # View Students
+  # View Students Annual Report
   /api/student/viewAnnualReport:
     get:
       summary: Returns a list of annual reports of all students.
@@ -334,6 +334,17 @@ paths:
         400:
           description: Error please check
 
+  # View attempted tests
+  /api/test/view/completed:
+    get:
+      summary: Returns a list of tests completed by students
+      description: Completed tests
+      responses:
+        200:    # status code
+          description: Successful Response
+        400:
+          description: Error please check
+
   # View tests by standard
   /api/test/view/standard:
     get:
@@ -356,7 +367,7 @@ paths:
         400:
           description: Error please check
 
-  # View tests by 
+  # View all tests
   /api/test/view/All:
     get:
       summary: Returns a list of all tests
@@ -383,7 +394,7 @@ paths:
           schema:
             type: object
             properties:
-              testid: 
+              testId: 
                 type: string
                 default: "0000"        
       responses: 
@@ -406,9 +417,12 @@ paths:
           schema:
             type: object
             properties:
-              testid: 
+              testId: 
                 type: string
-                default: "0000"        
+                default: "0000" 
+              marks:
+                type: string
+                default: "25"       
       responses: 
        200:
         description: Success, test ended sucessfully
