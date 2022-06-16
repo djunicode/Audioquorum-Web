@@ -154,6 +154,27 @@ const endTest = async (req, res) => {
     }
 };
 
+// View all tests
+const getAllTests = async (req, res) => {
+    try {
+        let tests = await Test.find({});
+        if(tests.length === 0) {
+            res.status(404).json({
+                message: 'No tests found!'
+            });
+        } else {
+            res.status(200).json({
+                data: tests
+            });
+        }
+
+    } catch(error) {
+        res.status(400).json({
+            message: error.message
+        });
+    }
+};
+
 // View the user's available tests by standard
 const getTestsByStandard = async (req, res) => {
     try {
@@ -189,57 +210,6 @@ const getTestsByStandard = async (req, res) => {
     }
 };
 
-// View all tests
-const getAllTests = async (req, res) => {
-    try {
-        
-
-        let tests = await Test.find({});
-        if(tests.length === 0) {
-            res.status(404).json({
-                message: 'No tests found!'
-            });
-        } else {
-            res.status(200).json({
-                data: tests
-            });
-        }
-
-    } catch(error) {
-        res.status(400).json({
-            message: error.message
-        });
-    }
-};
-
-
-//View Testbysubj
-const getTestsBySubject = async (req, res) => {
-    try {
-        
-        const testsubj = await Test.find({subject: req.params.subject})
-        if(testsubj.length === 0) {
-                        res.status(404).json({
-                            message: "No tests for this subject available"
-                        });
-                    }
-                    else {
-                        res.status(201).json({
-                            message: "Found!",
-                            data: testsubj
-                        });
-                    }
-                
-                
-
-    } catch(error) {
-        res.status(400).json({
-            message: error.message
-        });
-    }
-};
-
-
 // View the user's attempted tests
 const getAttemptedTests = async (req, res) => {
     try {
@@ -252,7 +222,7 @@ const getAttemptedTests = async (req, res) => {
 
         const tests = []
     
-        await Promise.all (testsGiven.map(async (testId) => {
+        await Promise.all(testsGiven.map(async (testId) => {
             const test = await Test.findById(testId);
             tests.push(test)
         }))
@@ -267,4 +237,74 @@ const getAttemptedTests = async (req, res) => {
     }
 };
 
-module.exports = {createTest, getTestsByStandard, getAttemptedTests, startTest, endTest, getAllTests,getTestsBySubject}
+// View Testbysubj
+const getTestsBySubject = async (req, res) => {
+    try {
+        const testsubj = await Test.find({subject: req.params.subject})
+        if(testsubj.length === 0) {
+            res.status(404).json({
+                message: 'No tests for this subject available'
+            });
+            return;
+        } else {
+            res.status(201).json({
+                message: 'Found!',
+                data: testsubj
+            });
+            return;
+        }
+    } catch(error) {
+        res.status(400).json({
+            message: error.message
+        });
+    }
+};
+
+// View completed tests created by a teacher
+const getCompletedTests = async (req, res) => {
+    try {
+        const currentUser = req.user;
+        const testsCompleted = await Test.find({status: 'COMPLETED'});
+
+        if (testsCompleted.length === 0) {
+            res.status(404).json({
+                message: 'Tests not found!'
+            });
+            return;
+        }
+
+        const tests = [];
+        testsCompleted.forEach((test) => {
+            if (String(currentUser._id) === String(test.teacherId)) {
+                tests.push(test);
+            }
+        });
+
+        
+        if (tests.length === 0) {
+            res.status(404).json({
+                message: 'Tests not found!'
+            });
+            return;
+        }
+        
+        res.status(200).json({
+            data: tests
+        });
+    } catch(error) {
+        res.status(400).json({
+            message: error.message
+        });
+    }  
+};
+
+module.exports = {
+    createTest, 
+    startTest, 
+    endTest, 
+    getAllTests,
+    getTestsByStandard, 
+    getAttemptedTests, 
+    getTestsBySubject,
+    getCompletedTests
+};
