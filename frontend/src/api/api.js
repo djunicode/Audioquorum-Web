@@ -32,3 +32,20 @@ export const loginPost = async (formData) => {
     return err.message;
   }
 };
+
+export const logoutPut = async (token) => {
+  try {
+    const { data } = await axios.put(apiUrl + "/auth/logout", token, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log(data);
+    if (data) {
+      return data;
+    }
+  } catch (err) {
+    throw err;
+  }
+};
