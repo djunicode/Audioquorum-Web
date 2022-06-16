@@ -34,7 +34,7 @@ const createTest = async (req, res) => {
 // Give a test
 const startTest = async (req, res) => {
     try {
-        const currentTest = await Test.findById(req.body.testId).populate('questionIds', 'teacherId');
+        const currentTest = await Test.findById(req.body.testId).populate('questionIds').populate('teacherId');
         let currentUser = req.user;
         
         if(!currentTest) {
@@ -192,7 +192,7 @@ const getTestsByStandard = async (req, res) => {
 
             if (currentTime > endTime) {
                 test.status = "COMPLETED";
-            } else if (currentTime < dueTime) {
+            } else if (currentTime < dateTime) {
                 test.status = "UPCOMING"
             } else {
                 test.status = "ONGOING"

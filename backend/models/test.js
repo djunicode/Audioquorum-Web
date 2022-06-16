@@ -1,5 +1,6 @@
 // Importing modules
 const mongoose = require('mongoose');
+const Question = require('./question');
 
 // Creating the schema
 const testSchema = new mongoose.Schema(
@@ -50,10 +51,10 @@ const testSchema = new mongoose.Schema(
             enum: ["UPCOMING", "ONGOING", "COMPLETED"]
         },
 
-        questionIds: [{
+        questionIds: {
             type: [mongoose.Schema.Types.ObjectId],
             ref: 'Question'
-        }],
+        },
 
         totalQuestions: {
             type: Number,
@@ -72,10 +73,10 @@ const testSchema = new mongoose.Schema(
             ref: 'User'
         },
 
-        userIds: [{
-            type: mongoose.Schema.Types.ObjectId,
+        userIds: {
+            type: [mongoose.Schema.Types.ObjectId],
             ref: 'User'
-        }]
+        }
     },
     { timestamps: true }
 );
