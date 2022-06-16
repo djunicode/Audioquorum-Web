@@ -20,7 +20,7 @@ import {useNavigate} from "react-router-dom";
 // Import Api requests
 import {loginPost} from "../api/api";
 
-export const Login = () => {
+export const Login = (props) => {
 
   const navigate = useNavigate();
   const handleSubmit = async (event) => {
@@ -37,6 +37,7 @@ export const Login = () => {
       if (response.token) {
         localStorage.setItem("token", response.token);
         navigate("/dashboard", {replace: true})
+        props.setLoggedIn(true);
       } else {
         console.log(response);
       }

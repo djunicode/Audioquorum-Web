@@ -7,26 +7,25 @@ import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormLabel from '@mui/material/FormLabel';
 import Typography from "@mui/material/Typography";
 import { InputLabel, FormControl } from "@mui/material";
 import Divider from "@mui/material/Divider";
 
 // Import React Router DOM functions
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // Import api request functions
 import { signupPost } from "../api/api";
 
 export const Signup = () => {
-
   const navigate = useNavigate();
   const [emailError, setEmailError] = useState("");
   const [pwError, setPwError] = useState("");
   const [confirmPwError, setConfirmPwError] = useState("");
-  
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setEmailError("");
@@ -36,32 +35,31 @@ export const Signup = () => {
     // eslint-disable-next-line no-console
 
     // FORM VALIDATION
-    if (!data.get('email')) {
-      setEmailError('Please Enter Email ID');
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(data.get('email'))) {
-      setEmailError('Invalid email address');
-    } else if(data.get('password').length < 6) {
-      setPwError("Password too short.")
-    } else if (data.get('password') !== data.get('confirmPassword')) {
-        setConfirmPwError("This field does not match with the password.")
+    if (!data.get("email")) {
+      setEmailError("Please Enter Email ID");
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(data.get("email"))
+    ) {
+      setEmailError("Invalid email address");
+    } else if (data.get("password").length < 6) {
+      setPwError("Password too short.");
+    } else if (data.get("password") !== data.get("confirmPassword")) {
+      setConfirmPwError("This field does not match with the password.");
     } else {
       try {
         const response = await signupPost({
-          name: data.get('name'),
-          username: data.get('username'),
-          password: data.get('password'),
-          email: data.get('email'),
-          type: "TEACHER"
+          name: data.get("name"),
+          username: data.get("username"),
+          password: data.get("password"),
+          email: data.get("email"),
+          type: data.get("type")
         });
         
-        navigate("/signup", {replace: true});
-      }
-      catch(err) {
+        navigate("/signup", { replace: true });
+      } catch (err) {
         console.log(err);
       }
     }
-    
-
   };
   return (
     <Box
@@ -91,7 +89,7 @@ export const Signup = () => {
           SIGN UP
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-        <FormControl variant="standard" fullWidth>
+          <FormControl variant="standard" fullWidth>
             <InputLabel
               shrink
               htmlFor="name"
@@ -111,7 +109,7 @@ export const Signup = () => {
               hiddenLabel
             />
           </FormControl>
-        <FormControl variant="standard" fullWidth sx={{ mt: 3 }}>
+          <FormControl variant="standard" fullWidth sx={{ mt: 3 }}>
             <InputLabel
               shrink
               htmlFor="username"
@@ -150,8 +148,8 @@ export const Signup = () => {
               autoFocus
               variant="filled"
               hiddenLabel
-              error = {emailError === "" ? false : true}
-              helperText = {emailError === "" ? "" : emailError}
+              error={emailError === "" ? false : true}
+              helperText={emailError === "" ? "" : emailError}
             />
           </FormControl>
           <FormControl variant="standard" fullWidth sx={{ mt: 3 }}>
@@ -173,8 +171,8 @@ export const Signup = () => {
               autoComplete="new-password"
               variant="filled"
               hiddenLabel
-              error = {pwError === "" ? false : true}
-              helperText = {pwError === "" ? "" : pwError}
+              error={pwError === "" ? false : true}
+              helperText={pwError === "" ? "" : pwError}
             />
           </FormControl>
           <FormControl variant="standard" fullWidth sx={{ mt: 3 }}>
@@ -196,17 +194,39 @@ export const Signup = () => {
               autoComplete="new-password"
               variant="filled"
               hiddenLabel
-              error = {confirmPwError === "" ? false : true}
-              helperText = {confirmPwError === "" ? "" : confirmPwError}
-              
+              error={confirmPwError === "" ? false : true}
+              helperText={confirmPwError === "" ? "" : confirmPwError}
             />
           </FormControl>
-
+          <FormControl variant="standard" fullWidth sx={{ mt: 3 }}>
+          <InputLabel
+              shrink
+              htmlFor="type"
+              sx={{ color: "#000", fontWeight: 500, fontSize: 22 }}
+            >Type of Account
+            </InputLabel>
+            <RadioGroup
+              row
+              name="type"
+              sx={{ mt: 3 }}
+            >
+              <FormControlLabel
+                value="TEACHER"
+                control={<Radio />}
+                label="Teacher"
+              />
+              <FormControlLabel
+                value="STUDENT"
+                control={<Radio />}
+                label="Student"
+              />
+            </RadioGroup>
+          </FormControl>
           <Button
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ mt: 5, mb: 2, fontSize: "20px", fontWeight: 600 }}
+            sx={{ mt: 2, mb: 2, fontSize: "20px", fontWeight: 600 }}
           >
             SIGN UP
           </Button>
@@ -228,4 +248,3 @@ export const Signup = () => {
     </Box>
   );
 };
-
