@@ -16,7 +16,6 @@ const createTest = async (req, res) => {
             questionIds.push(newQuestion._id);
         }))
        
-        const currentUser = req.user;
        
         let newTest = new Test({...req.body, questionIds: questionIds, teacherId: currentUser._id});
 
