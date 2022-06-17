@@ -53,7 +53,7 @@ const startTest = async (req, res) => {
             return;
         }
 
-        const currentTime = moment().format();
+        const currentTime = moment().utcOffset("+05:30").format();
         
         // Date in the database should be in the format "YYYY-MM-DD" and time in "HH:MM:SS". Both string
         const dueDate = currentTest.date;
@@ -107,7 +107,7 @@ const endTest = async (req, res) => {
             return;
         }
         
-        const currentTime = moment().format();
+        const currentTime = moment().utcOffset("+05:30").format();
 
         // Date in the database should be in the format "YYYY-MM-DD" and time in "HH:MM:SS". Both string
         const dueDate = currentTest.date;
