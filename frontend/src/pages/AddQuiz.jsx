@@ -27,7 +27,13 @@ export const AddQuiz = () => {
 const detailFill=(e)=>{
     let name = `${e.target.name}`
     let value = e.target.value
-    setData({ ...data, [name]: value })
+    if(name==='time'){
+      let testTime=value+':'+'00'
+      setData({ ...data, [name]: testTime})
+    }
+    else{
+      setData({ ...data, [name]: value})
+    }
 }
   return (
     <>

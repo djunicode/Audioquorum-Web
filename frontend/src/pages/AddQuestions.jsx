@@ -2,7 +2,7 @@ import { Typography, Grid, TextField, FormControlLabel, Radio, RadioGroup, Butto
 import React, { useState } from 'react'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 export const AddQuestions = (props) => {
@@ -16,20 +16,11 @@ export const AddQuestions = (props) => {
   const date = location.state.date
   const time = location.state.time
   const totalQuestions = location.state.totalQuestions
-  const [data, setData] = useState({
-    "name": "",
-    "description": "",
-    "subject": "",
-    "standard": "",
-    "duration": 0,
-    "date": "",
-    "time": "",
-    "questions": [],
-    "totalQuestions": 0,
-    "totalMarks": 0
-  })
+
+  const navigate = useNavigate()
   const [question, setQuestion] = useState(
     {
+      questionNo: 0,
       question: '',
       optionA: '',
       optionB: '',
@@ -57,6 +48,7 @@ export const AddQuestions = (props) => {
       const prevQuestionValues = questions[index]
 
       setQuestion({
+        questionNo: prevQuestionValues.questionNo,
         question: prevQuestionValues.question,
         optionA: prevQuestionValues.optionA,
         optionB: prevQuestionValues.optionB,
@@ -66,6 +58,9 @@ export const AddQuestions = (props) => {
         explanation: prevQuestionValues.explanation,
         marks: prevQuestionValues.marks
       })
+
+      console.log(question)
+      console.log(questions)
 
     }
     else {
@@ -83,6 +78,7 @@ export const AddQuestions = (props) => {
       console.log(questions.length)
       const nextQuestionValues = questions[index]
       setQuestion({
+        questionNo: index,
         question: nextQuestionValues.question,
         optionA: nextQuestionValues.optionA,
         optionB: nextQuestionValues.optionB,
@@ -97,6 +93,7 @@ export const AddQuestions = (props) => {
     else if (questions.length === index) {
 
       setQuestion({
+        questionNo: index,
         question: '',
         optionA: '',
         optionB: '',
@@ -111,6 +108,7 @@ export const AddQuestions = (props) => {
 
       setQuestions([...questions, question])
       setQuestion({
+        questionNo: index,
         question: '',
         optionA: '',
         optionB: '',
@@ -124,9 +122,9 @@ export const AddQuestions = (props) => {
   }
 
   const handleSubmit = () => {
-
+    var axios = require('axios')
     if (question.question === "") {
-      setData({
+      let data = {
         "name": `${name}`,
         "description": `${description}`,
         "subject": `${subject}`,
@@ -134,15 +132,49 @@ export const AddQuestions = (props) => {
         "duration": duration,
         "date": `${date}`,
         "time": `${time}`,
+        "status": "UPCOMING",
         "questions": questions,
         "totalQuestions": totalQuestions,
         "totalMarks": totalMarks
+      }
+      let token = localStorage.getItem('token')
+    console.log(data)
+    let config = {
+      method: 'post',
+      url: 'https://audioquorum-api.herokuapp.com/api/test/create',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    axios(config)
+      .then(function (response) {
+        if (response.status === 201) {
+          navigate("/quizzes");
+        }
       })
+      .catch(function (error) {
+        console.log(error);
+      });
+
     }
     else {
       setQuestions([...questions, question])
-      const array = [...questions, question]
-      setData({
+      let array = [...questions, question]
+      setQuestion({
+        question: '',
+        optionA: '',
+        optionB: '',
+        optionC: '',
+        optionD: '',
+        correctAnswer: '',
+        explanation: '',
+        marks: ''
+      })
+      setQuestionIndex(questionIndex + 1)
+      let data = {
         "name": `${name}`,
         "description": `${description}`,
         "subject": `${subject}`,
@@ -150,13 +182,36 @@ export const AddQuestions = (props) => {
         "duration": duration,
         "date": `${date}`,
         "time": `${time}`,
+        "status": "UPCOMING",
         "questions": array,
         "totalQuestions": totalQuestions,
         "totalMarks": totalMarks
-      })
+      }
+      let token = localStorage.getItem('token')
+      console.log(data)
+      let config = {
+        method: 'post',
+        url: 'https://audioquorum-api.herokuapp.com/api/test/create',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        data: data
+      };
+  
+      axios(config)
+        .then(function (response) {
+          if (response.status === 201) {
+            navigate("/quizzes");
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     }
   }
-  console.log(data)
+ 
+  
 
   return (
     <div>
