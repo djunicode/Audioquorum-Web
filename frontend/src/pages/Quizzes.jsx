@@ -21,23 +21,23 @@ const QuizBox = styled(Box)(({theme}) => ({
   }
 }))
 
-const Quiz = () => {
+const Quiz = ({data}) => {
   return(
     <QuizBox>
       <Grid container spacing={1}>
         <Grid item xs={4} sx={{display: 'flex', justifyContent: 'left', alignItems: 'center'}}>
           <Typography>
-            English Literature : Some Chapter Name
+            {data.name}
           </Typography>
         </Grid>
         <Grid item xs={2} sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
           <Typography>
-            30 mins
+            {data.duration} mins
           </Typography>
         </Grid>
         <Grid item xs={2} sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
           <Typography>
-            10 Q
+            {data.totalQuestions} Q
           </Typography>
         </Grid>
         <Grid item xs={2} sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
@@ -47,7 +47,7 @@ const Quiz = () => {
         </Grid>
         <Grid item xs={2} sx={{display: 'flex', justifyContent: 'right', alignItems: 'center'}}>
           <Typography>
-            due TODAY @ 6.00pm
+            due @ {data.time}
           </Typography>
         </Grid>
       </Grid>
@@ -93,12 +93,12 @@ export const Quizzes = () => {
   console.log(token);
   useEffect(() => {
     axios
-      .get('http://audioquorum-api.herokuapp.com/api/test/view/standard/', {
+      .get('http://audioquorum.herokuapp.com/api/test/view/All/', {
         headers: {
           'Authentication': token
         }
       })
-      .then(response => setData(response.data.tests))
+      .then(response => setData(response.data.data))
   }, [])
   console.log('====================================');
   console.log(data);
@@ -114,14 +114,10 @@ export const Quizzes = () => {
             </StyledTabs>
           </Box>
           <TabPanel value="Assigned" sx={{paddingX: '0px', paddingY: '10px'}}>
-            <Quiz />
-            <Quiz />
-            <Quiz />
-            <Quiz />
+            {data && data.filter(x => x.status === "UPCOMING").map(x => <Quiz key={x._id} data={x} />)}
           </TabPanel>
           <TabPanel value="Completed" sx={{padding: '0px', paddingY: '10px'}}>
-            <Quiz />
-            <Quiz />
+          {data && data.filter(x => x.status === "COMPLETED").map(x => <Quiz key={x._id} data={x} />)}
           </TabPanel>
         </TabContext>
       </Box>

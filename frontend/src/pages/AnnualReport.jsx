@@ -57,12 +57,12 @@ export const AnnualReport = () => {
   console.log(token);
   useEffect(() => {
     axios
-      .get('http://audioquorum-api.herokuapp.com/api/test/view/standard/', {
+      .get('http://audioquorum.herokuapp.com/api/student/viewAnnualReport/', {
         headers: {
           'Authentication': token
         }
       })
-      .then(response => setData(response.data.tests))
+      .then(response => setData(response.data))
   }, [])
   console.log('====================================');
   console.log(data);

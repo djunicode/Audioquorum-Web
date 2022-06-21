@@ -24,12 +24,12 @@ export const Dashboard = () => {
   console.log(token);
   useEffect(() => {
     axios
-      .get('http://audioquorum-api.herokuapp.com/api/test/view/attempted/', {
+      .get('http://audioquorum.herokuapp.com/api/test/view/All/', {
         headers: {
           'Authentication': token
         }
       })
-      .then(response => setData(response.data.tests))
+      .then(response => setData(response.data.data))
   }, [])
   console.log('====================================');
   console.log(data);
