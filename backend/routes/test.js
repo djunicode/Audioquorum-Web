@@ -9,7 +9,8 @@ const {
     getTestsByStandard,
     getAttemptedTests,
     getTestsBySubject,
-    getCompletedTests
+    getCompletedTests,
+    viewAllSubjects
 } = require('../controllers/test');
 
 
@@ -31,6 +32,8 @@ router.get('/view/attempted', [auth.verifyjwt, auth.userTypeTeacherStudent], get
 router.get('/view/TestbySubj/:subject',[auth.verifyjwt,auth.userTypeTeacher], getTestsBySubject);
 
 router.get('/view/completed', [auth.verifyjwt, auth.userTypeTeacher], getCompletedTests);
+
+router.get('/viewAllSubjects', [auth.verifyjwt, auth.userTypeTeacherStudent], viewAllSubjects);
 
 // Exporting Modules
 module.exports = router;

@@ -311,6 +311,42 @@ const getCompletedTests = async (req, res) => {
     }  
 };
 
+// View all subjects
+const viewAllSubjects = async (req, res) => {
+    try {
+
+        
+        // Find all tests
+        const subjects = await Test.find().select('subject -_id');;
+
+        // Checking for zero tests
+        if (subjects.length == 0) {
+            res.status(404).json({
+                message: 'No test found!'
+            });
+            return;
+        }
+        
+        // Get only the strings from the objects received
+        const subjectNames = [];
+        subjects.map(subject => subjectNames.push(subject.subject));
+
+        // Remove duplicate occurrences of subject names
+        let uniqueSubjects = [...new Set(subjectNames)];
+    
+        
+        // Send subjects as data
+        res.status(200).json({
+            data: uniqueSubjects
+        });
+
+    } catch (error) {
+        res.status(400).json({
+            message: error.message
+        }); 
+    }
+}
+
 module.exports = {
     createTest, 
     startTest, 
@@ -319,5 +355,6 @@ module.exports = {
     getTestsByStandard, 
     getAttemptedTests, 
     getTestsBySubject,
-    getCompletedTests
+    getCompletedTests,
+    viewAllSubjects
 };
