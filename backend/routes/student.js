@@ -15,7 +15,7 @@ router.get('/view', [auth.verifyjwt, auth.userTypeTeacher], viewStudentById);
 
 router.get('/viewAll', [auth.verifyjwt, auth.userTypeTeacher], viewAllStudents);
 
-router.get('/viewByTest', [auth.verifyjwt, auth.userTypeTeacher], viewStudentsByTest);
+router.get('/viewByTest/:testId', [auth.verifyjwt, auth.userTypeTeacher], viewStudentsByTest);
 
 router.get('/viewAnnualReport', [auth.verifyjwt, auth.userTypeTeacher], studentsAnnualReport);
 
