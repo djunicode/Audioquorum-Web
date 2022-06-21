@@ -19,14 +19,14 @@ export const ViewResults = () => {
   let navigate = useNavigate();
   let location = useLocation()
   const id = location.state.id
+  const [students, setStudents] = useState([])
   const [data, setData] = useState([])
   useEffect(() => {
-    console.log(id)
     let token = localStorage.getItem('token')
 
     var config = {
       method: 'get',
-      url: 'https://audioquorum-api.herokuapp.com/api/student/viewByTest/62ac76fb29e33e3b39545064',
+      url: `https://audioquorum-api.herokuapp.com/api/student/viewByTest/${id}`,
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -34,8 +34,8 @@ export const ViewResults = () => {
 
     axios(config)
       .then(function (response) {
-        console.log(response.data.data);
-        setData(response.data.data)
+        setStudents(response.data.data.students)
+        setData(response.data.data.currentTest)
       })
       .catch(function (error) {
         console.log(error);
@@ -45,21 +45,21 @@ export const ViewResults = () => {
   return (
     <>
       <div style={{ display: 'flex' }}>
-        <ChevronLeftIcon style={{ height: '50px', width: '50px', color: '#30574E' }} onClick={() => { navigate("/") }} />
+        <ChevronLeftIcon style={{ height: '50px', width: '50px', color: '#30574E' }} onClick={() => { navigate("/quizzes") }} />
         <Typography sx={{ fontSize: '30px', fontWeight: '600' }}>View Results</Typography></div>
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0 2vw', margin: '0 1%' }}>
         <Typography sx={{ marginY: '1%', textTransform: 'uppercase', fontWeight: 600, fontSize: '30px', lineHeight: '45px' }}>
-          Quiz Name:
+          Quiz Name: {data.name}
         </Typography>
         <Grid item container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography>
-            Date:
+            Date: {data.date}
           </Typography>
           <Typography>
-            Time:
+            Time: {data.time}
           </Typography>
           <Typography>
-            Maximum Marks:
+            Maximum Marks: {data.totalMarks}
           </Typography>
         </Grid>
         <Box sx={{ backgroundColor: '#F0F0F0', width: '100%', minHeight: '70vh', padding: '1.5%' }}>
@@ -69,40 +69,33 @@ export const ViewResults = () => {
                 <TableRow sx={{ "& td": { border: 0 } }}>
                   <TableCell>Sr. No.</TableCell>
                   <TableCell align="center" >Student Name</TableCell>
-                  <TableCell align="center">Roll No.</TableCell>
                   <TableCell align="center">Marks</TableCell>
-                  <TableCell align="center">Average</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data.length !== 0 ? data.map((data, index) => (
-                  <>
+                {
+                  students.length !== 0 ? students.map((student, index) => (
+                    <>
+                      <TableRow
+                        key={index}
+                        sx={{ backgroundColor: '#D5E2DF', "&td": { border: 0 } }}
+                      >
+                        <TableCell scope="row">
+                          {index + 1}
+                        </TableCell>
+                        <TableCell align="center">{student.name}</TableCell>
+                        <TableCell align="center">{student.test[0].marksObtained}</TableCell>
+                      </TableRow>
+                      <TableRow sx={{ height: '10px' }} />
+                    </>
+                  )) : <TableRow
+                    sx={{ backgroundColor: '#D5E2DF', "&td": { border: 0 } }}
+                  >
+                    <TableCell colSpan={5} sx={{ fontWeight: 'bold' }}>
+                      No student has given the test
+                    </TableCell>
 
-                    <TableRow
-
-                      key={index}
-                      sx={{ backgroundColor: '#D5E2DF', "&td": { border: 0 } }}
-
-                    >
-                      <TableCell scope="row">
-                        {index + 1}
-                      </TableCell>
-                      <TableCell align="center">{data.name}</TableCell>
-                      <TableCell align="center">{data.roll_no}</TableCell>
-                      <TableCell align="center">{data.marks}</TableCell>
-                      <TableCell align="center">{data.average}</TableCell>
-                    </TableRow>
-                    <TableRow sx={{ height: '10px' }} />
-                  </>
-                )) : <TableRow
-                  sx={{ backgroundColor: '#D5E2DF', "&td": { border: 0 } }}
-
-                >
-                  <TableCell colSpan={5} sx={{fontWeight:'bold'}}>
-                    No student has given the test
-                  </TableCell>
-
-                </TableRow>}
+                  </TableRow>}
               </TableBody>
             </Table>
           </TableContainer>

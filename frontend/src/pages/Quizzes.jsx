@@ -127,7 +127,6 @@ export const Quizzes = () => {
   const [value, setValue] = useState('Assigned');
   const [data, setData] = useState([])
   const token = localStorage.getItem('token')
-  console.log(token);
   useEffect(() => {
     axios
       .get('http://audioquorum-api.herokuapp.com/api/test/view/All/', {
