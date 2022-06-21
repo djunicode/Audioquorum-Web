@@ -84,7 +84,8 @@ const viewStudentsByTest = async (req, res) => {
 
         // Formatting Data;
         students.forEach((student) => {
-            student.test = student.test.filter(function (entry) { return String(entry.testId) === req.body.testId; });
+            student.test = student.test.filter(function (entry) { 
+                return String(entry.testId) === req.params.testId; });
 
             student.username = undefined;
             student.password = undefined;

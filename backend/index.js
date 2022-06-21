@@ -18,7 +18,7 @@ app.use(morgan('dev'));
 const swaggerUI = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerJSDocs = YAML.load('./api.yaml');
-app.use(" ", swaggerUI.serve, swaggerUI.setup(swaggerJSDocs));
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerJSDocs));
 
 // Importing Routes
 const adminRouter = require('./routes/admin');
