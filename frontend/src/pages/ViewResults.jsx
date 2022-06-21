@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Grid, Typography } from '@mui/material'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -6,62 +6,42 @@ import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { styled } from '@mui/system'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import { Link, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import '../App.css'
 
 
-const StudentBox = styled(Box)(({ theme }) => ({
-  minHeight: '36px',
-  backgroundColor: theme.palette.secondary.main,
-  borderRadius: '5px',
-  marginTop: '10px',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-}))
 
 
 
-
-const data = [{ name: 'Student name', roll_no: '01', marks: '411', average: '89.33' }, { name: 'Student name', roll_no: '01', marks: '411', average: '89.33' }, { name: 'Student name', roll_no: '01', marks: '411', average: '89.33' }, { name: 'Student name', roll_no: '01', marks: '411', average: '89.33' }]
-const StudentReport = () => {
-  return (
-    <StudentBox>
-      <Grid container>
-        <Grid item xs={1} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <Typography sx={{ fontSize: '20px', lineHeight: '30px', fontWeight: 400, marginY: '3px' }}>
-            01
-          </Typography>
-        </Grid>
-        <Grid item xs={4} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <Typography sx={{ fontSize: '20px', lineHeight: '30px', fontWeight: 400, marginY: '3px' }}>
-            Student Name
-          </Typography>
-        </Grid>
-        <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <Typography sx={{ fontSize: '20px', lineHeight: '30px', fontWeight: 400, marginY: '3px' }}>
-            01
-          </Typography>
-        </Grid>
-        <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <Typography sx={{ fontSize: '20px', lineHeight: '30px', fontWeight: 400, marginY: '3px' }}>
-            411
-          </Typography>
-        </Grid>
-        <Grid item xs={1} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <Typography sx={{ fontSize: '20px', lineHeight: '30px', fontWeight: 400, marginY: '3px' }}>
-            89.33
-          </Typography>
-        </Grid>
-      </Grid>
-    </StudentBox>
-  )
-}
-
-export const AnnualReport = () => {
+export const ViewResults = () => {
+  var axios = require('axios');
   let navigate = useNavigate();
+  let location = useLocation()
+  const id = location.state.id
+  const [data, setData] = useState([])
+  useEffect(() => {
+    console.log(id)
+    let token = localStorage.getItem('token')
+
+    var config = {
+      method: 'get',
+      url: 'https://audioquorum-api.herokuapp.com/api/student/viewByTest/62ac76fb29e33e3b39545064',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    };
+
+    axios(config)
+      .then(function (response) {
+        console.log(response.data.data);
+        setData(response.data.data)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, [])
+
   return (
     <>
       <div style={{ display: 'flex' }}>
@@ -95,7 +75,7 @@ export const AnnualReport = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data.map((data, index) => (
+                {data.length !== 0 ? data.map((data, index) => (
                   <>
 
                     <TableRow
@@ -114,7 +94,15 @@ export const AnnualReport = () => {
                     </TableRow>
                     <TableRow sx={{ height: '10px' }} />
                   </>
-                ))}
+                )) : <TableRow
+                  sx={{ backgroundColor: '#D5E2DF', "&td": { border: 0 } }}
+
+                >
+                  <TableCell colSpan={5} sx={{fontWeight:'bold'}}>
+                    No student has given the test
+                  </TableCell>
+
+                </TableRow>}
               </TableBody>
             </Table>
           </TableContainer>

@@ -2,7 +2,7 @@ import axios from "axios";
 const token = localStorage.getItem("token");
 axios.defaults.headers.common = {'Authorization': `Bearer ${token}`}
 
-const apiUrl = "https://audioquorum.herokuapp.com/api";
+const apiUrl = "https://audioquorum-api.herokuapp.com/api";
 
 export const signupPost = async (formData) => {
   try {

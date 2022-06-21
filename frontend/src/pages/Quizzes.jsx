@@ -22,8 +22,13 @@ const QuizBox = styled(Box)(({theme}) => ({
 }))
 
 const Quiz = ({data}) => {
+  let navigate=useNavigate()
+  const viewTest=(id)=>{
+    console.log(id)
+    navigate(`/viewresults`,{state:{id:id}})
+  }
   return(
-    <QuizBox>
+    <QuizBox onClick={()=>viewTest(data._id)}>
       <Grid container spacing={1}>
         <Grid item xs={4} sx={{display: 'flex', justifyContent: 'left', alignItems: 'center'}}>
           <Typography>
@@ -86,6 +91,7 @@ const StyledTab = styled(Tab)(({theme}) => ({
 }))
 
 export const Quizzes = () => {
+  
   const navigate = useNavigate()
   const [value, setValue] = useState('Assigned');
   const [data, setData] = useState([])
@@ -93,7 +99,7 @@ export const Quizzes = () => {
   console.log(token);
   useEffect(() => {
     axios
-      .get('http://audioquorum.herokuapp.com/api/test/view/All/', {
+      .get('http://audioquorum-api.herokuapp.com/api/test/view/All/', {
         headers: {
           'Authentication': token
         }
