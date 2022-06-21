@@ -65,7 +65,7 @@ const viewAllStudents = async (req, res) => {
 const viewStudentsByTest = async (req, res) => {
     try {
         // Find test by id
-        const currentTest = await Test.findById(req.body.testId);
+        const currentTest = await Test.findById(req.params.testId);
 
         // Checking if the test exists
         if (!currentTest) {

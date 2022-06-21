@@ -4,6 +4,7 @@ const { ObjectId } = require('mongodb');
 const moment = require('moment');
 const Test = require('../models/test');
 const Question = require('../models/question');
+const User = require('../models/user');
 
 // Create Event
 const createTest = async (req, res) => {
@@ -192,10 +193,10 @@ const getTestsByStandard = async (req, res) => {
 
             if (currentTime > endTime) {
                 test.status = "COMPLETED";
+            } else if (currentTime > dateTime && currentTime < endTime) {
+                test.status = "ONGOING"
             } else if (currentTime < dateTime) {
                 test.status = "UPCOMING"
-            } else {
-                test.status = "ONGOING"
             }
             await test.save();
         }));
@@ -213,22 +214,51 @@ const getTestsByStandard = async (req, res) => {
 // View the user's attempted tests
 const getAttemptedTests = async (req, res) => {
     try {
-        const currentUser = req.user;
+        const currentUser =  await User.findById(req.user._id).populate('test.testId');
+        console.log(currentUser);
+        const standard = currentUser.standard
+        let tests = await Test.find({ standard });
+        
+        const currentTime = moment().format();
+        
+        await Promise.all (tests.map(async (test) => {
+            const dueDate = test.date;
+            const dueTime = test.time;
+            const dateTime = moment(`${dueDate} ${dueTime}`, 'YYYY-MM-DD HH:mm:ss').format();
+            const endTime = moment(dateTime).add(test.duration, 'minutes').format();
 
-        const testsGiven = []
-        currentUser.test.map((test) => {
-            testsGiven.push(test.testId)
-        })
+            if (currentTime > endTime) {
+                test.status = "COMPLETED";
+            } else if (currentTime > dateTime && currentTime < endTime) {
+                test.status = "ONGOING"
+            } else if (currentTime < dateTime) {
+                test.status = "UPCOMING"
+            }
+            await test.save();
+        }));
 
-        const tests = []
+        // const testsGiven = []
+        // currentUser.test.map((test) => {
+        //     testsGiven.push(test.testId)
+        // })
+
+        // const tests = []
     
-        await Promise.all(testsGiven.map(async (testId) => {
-            const test = await Test.findById(testId);
-            tests.push(test)
-        }))
+        // await Promise.all(testsGiven.map(async (testId) => {
+        //     const test = await Test.findById(testId);
+        //     tests.push(test)
+        // }))
+        
+        // currentUser.populate('test.testId');
+        // const attemptedTests =currentUser.test;
+
+        // for (let i = 0; i < currentUser.test.length; i++) {
+           
+        // }
+        let attemptedTests = currentUser.test;
         
         res.status(200).json({
-            tests
+            attemptedTests
         });
     } catch(error) {
         res.status(400).json({
