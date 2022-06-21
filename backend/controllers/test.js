@@ -237,24 +237,6 @@ const getAttemptedTests = async (req, res) => {
             await test.save();
         }));
 
-        // const testsGiven = []
-        // currentUser.test.map((test) => {
-        //     testsGiven.push(test.testId)
-        // })
-
-        // const tests = []
-    
-        // await Promise.all(testsGiven.map(async (testId) => {
-        //     const test = await Test.findById(testId);
-        //     tests.push(test)
-        // }))
-        
-        // currentUser.populate('test.testId');
-        // const attemptedTests =currentUser.test;
-
-        // for (let i = 0; i < currentUser.test.length; i++) {
-           
-        // }
         let attemptedTests = currentUser.test;
         
         res.status(200).json({
