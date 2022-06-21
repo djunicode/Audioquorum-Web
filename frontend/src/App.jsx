@@ -15,6 +15,7 @@ import { Quiz } from './pages/Quiz';
 import { AnnualReport } from './pages/AnnualReport';
 import { AddQuiz } from './pages/AddQuiz';
 import { AddQuestions } from './pages/AddQuestions';
+import {ViewResults} from './pages/ViewResults'
 import LoggedInNavbar from './components/LoggedInNavbar';
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
         <Route path='/annual-report' element={<AnnualReport />} />
         <Route path='/add-quiz' element={<AddQuiz />} />
         <Route path='/add-questions' element={<AddQuestions />} />
+        <Route path='/viewresults' element={<ViewResults/>} />
       </Routes>
     
     </ThemeProvider>
