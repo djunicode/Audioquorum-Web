@@ -85,7 +85,8 @@ const viewStudentsByTest = async (req, res) => {
         // Formatting Data;
         students.forEach((student) => {
             student.test = student.test.filter(function (entry) { 
-                return String(entry.testId) === req.params.testId; });
+                return String(entry.testId) === req.params.testId; 
+            });
 
             student.username = undefined;
             student.password = undefined;
@@ -96,7 +97,7 @@ const viewStudentsByTest = async (req, res) => {
         
         // Send students data
         res.status(200).json({
-            data: students
+            data: { currentTest, students }
         });
     } catch (error) {
         res.status(400).json({
