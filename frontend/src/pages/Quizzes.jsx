@@ -24,10 +24,8 @@ const QuizBox = styled(Box)(({ theme }) => ({
 const Quiz = ({ data }) => {
   let navigate = useNavigate()
   const viewTest = (id) => {
-    console.log(id)
     navigate(`/viewresults`, { state: { id: id } })
   }
-  console.log(data.status)
   return (
     <>
       {data.status === 'COMPLETED' ?
@@ -139,9 +137,6 @@ export const Quizzes = () => {
       })
       .then(response => setData(response.data.data))
   }, [])
-  console.log('====================================');
-  console.log(data);
-  console.log('====================================');
   return (
     <Box>
       <Box sx={{ paddingX: '96px', paddingY: '10px', marginBottom: '144px' }}>
